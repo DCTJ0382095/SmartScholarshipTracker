@@ -14,13 +14,16 @@ import java.net.http.HttpResponse;
 
 public class APIService {
 
-    public List<Scholarship> fetchScholarships() {
+    private static final String API_URL = "https://api.apify.com/v2/acts/commanding_hotdog~scholarship-finder-scraper/run-sync-get-dataset-items?token=";
+
+    public List<Scholarship> fetchScholarships(){
         String token = loadApiToken();
         String json = sendRequest(token);
-        return parseScholarships(json);
+        System.out.println(json);
+        return List.of();
     }
 
-    //Method for retrieving the API token from local files
+    //This method is for retrieving the API token from local files
     private String loadApiToken(){
         Properties properties = new Properties();
         try(InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")){
@@ -34,7 +37,38 @@ public class APIService {
         }
     }
 
-    private static final String API_URL = "https://api.apify.com/v2/acts/commanding_hotdog~scholarship-finder-scraper/run-sync-get-dataset-items";
+    //This method is for creating the JSON request body to be sent to the Apify API
+    private String buildRequestBody(){
+        return """
+                {
+                    "keyword": "",
+                    "maxResults": "50",
+                    "maxPages": "5",
+                    "fetchDetails": true
+                }
+                """;
+    }
+
     private String sendRequest(String token){
+        String requestBody = buildRequestBody();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()   //Creates a new HTTP request
+                .uri(URI.create(API_URL+token))   //Destination of the request
+                .header("Content-Type", "application/json")   //Letting Apify know it is a JSON file
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))   //Body of the request
+                .build();   //Finalizes the request
+        try{
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());   //Sends the request
+            System.out.println("Status: " + response.statusCode());
+            System.out.println(response.body());
+            return response.body();
+        } catch(IOException|InterruptedException e){
+            throw new RuntimeException("Failed to fetch scholarships from Apify, e");
+        }
+    }
+
+    private List<Scholarship> parseScholarships(String json) {
+        return List.of();
     }
 }
