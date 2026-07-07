@@ -49,6 +49,16 @@ public class APIService {
                 """;
     }
 
+    //This method is for creating the HTTP request that will be sent to the Apify API
+    private HttpRequest buildRequest(String token, String requestBody){
+        return HttpRequest.newBuilder()   //Creates a new HTTP request
+                .uri(URI.create(API_URL+token))   //Destination of the request
+                .header("Content-Type", "application/json")   //Letting Apify know it is a JSON file
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))   //Body of the request
+                .build();   //Finalizes the request
+    }
+
+    //This method is used to check the status code and to prevent response when failed
     private void validateResponse(HttpResponse<String> response){
         int statusCode = response.statusCode();
         if(statusCode!=201){
@@ -56,14 +66,11 @@ public class APIService {
         }
     }
 
+    //This method is used to send the HTTP request to the Apify API
     private String sendRequest(String token){
         String requestBody = buildRequestBody();
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()   //Creates a new HTTP request
-                .uri(URI.create(API_URL+token))   //Destination of the request
-                .header("Content-Type", "application/json")   //Letting Apify know it is a JSON file
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))   //Body of the request
-                .build();   //Finalizes the request
+        HttpRequest request = buildRequest(token, requestBody);
         try{
             HttpResponse<String> response =
                     client.send(request, HttpResponse.BodyHandlers.ofString());   //Sends the request
