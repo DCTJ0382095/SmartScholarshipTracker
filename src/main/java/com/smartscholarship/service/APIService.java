@@ -49,6 +49,13 @@ public class APIService {
                 """;
     }
 
+    private void validateResponse(HttpResponse<String> response){
+        int statusCode = response.statusCode();
+        if(statusCode!=201){
+            throw new RuntimeException("Apify request failed. HTTP Status: " + response.statusCode() + "\nResponse: " + response.body());
+        }
+    }
+
     private String sendRequest(String token){
         String requestBody = buildRequestBody();
         HttpClient client = HttpClient.newHttpClient();
@@ -60,15 +67,17 @@ public class APIService {
         try{
             HttpResponse<String> response =
                     client.send(request, HttpResponse.BodyHandlers.ofString());   //Sends the request
-            System.out.println("Status: " + response.statusCode());
-            System.out.println(response.body());
+            validateResponse(response);
             return response.body();
-        } catch(IOException|InterruptedException e){
-            throw new RuntimeException("Failed to fetch scholarships from Apify, e");
+        } catch(IOException e){
+            throw new RuntimeException("Unable to connect to the Apify API. Please check your Internet connection.", e);
+        } catch(InterruptedException e){
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("The API request was interrupted.", e);
         }
     }
 
-    private List<Scholarship> parseScholarships(String json) {
+    private List<Scholarship> parseScholarships(String json){
         return List.of();
     }
 }
