@@ -19,19 +19,22 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.io.OutputStream;
+import java.io.InputStream;
+import java.time.format.DateTimeParseException;
 
 public class APIService {
 
     private static final String API_URL = "https://api.apify.com/v2/acts/commanding_hotdog~scholarship-finder-scraper/run-sync-get-dataset-items?token=";
     private static final int MAX_RESULTS = 50;
     private static final Path CACHE_DIRECTORY = Path.of("cache");
-    private static final Path PRIMARY_CACHE_FILE = CACHE_DIRECTORY.resolve("primary.json");
-    private static final Path PRIMARY_CACHE_PROPERTIES = CACHE_DIRECTORY.resolve("primary.properties");
+    private static final Path CACHE_FILE = CACHE_DIRECTORY.resolve("scholarships.json");
+    private static final Path CACHE_PROPERTIES = CACHE_DIRECTORY.resolve("cache.properties");
     private static final Duration CACHE_TTL = Duration.ofHours(24);
 
+    //This method is the main function
     public List<Scholarship> fetchScholarships() {
         String json;
-        if (hasCache()) {
+        if (hasCache() && isCacheValid()) {
             System.out.println("Loading scholarships from cache...");
             json = readCache();
         } else {
@@ -60,7 +63,7 @@ public class APIService {
         }
     }
 
-    //This method is for creating the JSON request body to be sent to the Apify API
+    //This method is for creating the JSON request body with the input parameters to be sent to the Apify API
     private String buildRequestBody() {
         return """
                 {
@@ -113,7 +116,7 @@ public class APIService {
 
     //This method is used to check if the local scholarship cache exists
     private boolean hasCache() {
-        return Files.exists(PRIMARY_CACHE_FILE);
+        return Files.exists(CACHE_FILE);
     }
 
     //This method is used to create the cache if it does not exist and saves the response from the API
@@ -123,11 +126,11 @@ public class APIService {
                 Files.createDirectories(CACHE_DIRECTORY);
             }
             Files.writeString(
-                    PRIMARY_CACHE_FILE,
+                    CACHE_FILE,
                     json,
                     StandardCharsets.UTF_8
             );
-            updatePrimaryCacheMetadata();
+            updateCacheMetadata();
         } catch (IOException e) {
             throw new RuntimeException("Failed to save scholarship cache", e);
         }
@@ -136,22 +139,49 @@ public class APIService {
     //This method is used to read the cached scholarship JSON
     private String readCache() {
         try {
-            return Files.readString(PRIMARY_CACHE_FILE, StandardCharsets.UTF_8);
+            return Files.readString(CACHE_FILE, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException("Failed to read scholarship cache", e);
         }
     }
 
     //This method is used to write the metadata for the cache
-    private void updatePrimaryCacheMetadata() {
+    private void updateCacheMetadata() {
         Properties properties = new Properties();
         properties.setProperty("lastUpdated", LocalDateTime.now().toString());
         properties.setProperty("cacheVersion", "1");
         properties.setProperty("recordCount", String.valueOf(MAX_RESULTS));
-        try (OutputStream output = Files.newOutputStream(PRIMARY_CACHE_PROPERTIES)) {
+        try (OutputStream output = Files.newOutputStream(CACHE_PROPERTIES)) {
             properties.store(output, "Primary Cache Metadata");
         } catch (IOException e) {
             throw new RuntimeException("Failed to update cache metadata", e);
         }
+    }
+
+    //This method is used to read the timestamp of the cache
+    private LocalDateTime getCacheTimestamp() {
+        Properties properties = new Properties();
+        try (InputStream input = Files.newInputStream(CACHE_PROPERTIES)) {
+            properties.load(input);
+            String timestamp = properties.getProperty("lastUpdated");
+            if (timestamp == null) {
+                throw new RuntimeException("Primary cache metadata is missing the lastUpdated property");
+            }
+            return LocalDateTime.parse(timestamp);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read primary cache metadata", e);
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Invalid cache timestamp format", e);
+        }
+    }
+
+    //This method is used to check if the cache is expired
+    private boolean isCacheValid() {
+        if (!hasCache()) {
+            return false;
+        }
+        LocalDateTime lastUpdated = getCacheTimestamp();
+        Duration cacheAge = Duration.between(lastUpdated, LocalDateTime.now());
+        return cacheAge.compareTo(CACHE_TTL) < 0;
     }
 }
