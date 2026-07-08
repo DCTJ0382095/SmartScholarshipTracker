@@ -12,13 +12,29 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+
 public class APIService {
 
     private static final String API_URL = "https://api.apify.com/v2/acts/commanding_hotdog~scholarship-finder-scraper/run-sync-get-dataset-items?token=";
+    private static final Path CACHE_DIRECTORY = Path.of("cache");
+    private static final Path CACHE_FILE = CACHE_DIRECTORY.resolve("scholarships.json");
 
     public List<Scholarship> fetchScholarships(){
-        String token = loadApiToken();
-        String json = sendRequest(token);
+        String json;
+        if(hasCache()){
+            System.out.println("Loading scholarships from cache...");
+            json = readCache();
+        }else{
+            System.out.println("Fetching scholarships from API...");
+            String token = loadApiToken();
+            json = sendRequest(token);
+            saveCache(json);
+        }
+
+        //This is temporary until Scholarship.java is ready to use
         System.out.println(json);
         return List.of();
     }
@@ -63,6 +79,36 @@ public class APIService {
         int statusCode = response.statusCode();
         if(statusCode!=201){
             throw new RuntimeException("Apify request failed. HTTP Status: " + response.statusCode() + "\nResponse: " + response.body());
+        }
+    }
+
+    //This method is used to check if the local scholarship cache exists
+    private boolean hasCache(){
+        return Files.exists(CACHE_FILE);
+    }
+
+    //This method is used to create the cache if it does not exist and saves the response from the API
+    private void saveCache(String json){
+        try{
+            if(!Files.exists(CACHE_DIRECTORY)){
+                Files.createDirectories(CACHE_DIRECTORY);
+            }
+            Files.writeString(
+                    CACHE_FILE,
+                    json,
+                    StandardCharsets.UTF_8
+            );
+        }catch(IOException e){
+            throw new RuntimeException("Failed to save scholarship cache", e);
+        }
+    }
+
+    //This method is used to read the cached scholarship JSON
+    private String readCache(){
+        try{
+            return Files.readString(CACHE_FILE, StandardCharsets.UTF_8);
+        }catch(IOException e){
+            throw new RuntimeException("Failed to read scholarship cache", e);
         }
     }
 

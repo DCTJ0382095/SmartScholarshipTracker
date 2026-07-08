@@ -42,3 +42,6 @@ build/
 
 ### Ignore local API token ###
 src/main/resources/config.properties
+
+# Local cache
+cache/
