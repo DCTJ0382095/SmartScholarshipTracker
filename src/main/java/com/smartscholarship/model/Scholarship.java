@@ -55,7 +55,6 @@ public class Scholarship {
     }
 
     // Getters and Setters
-
     public String getTitle() {
         return title;
     }
