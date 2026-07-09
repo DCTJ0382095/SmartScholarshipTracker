@@ -3,24 +3,21 @@ package com.smartscholarship.service;
 import com.smartscholarship.model.Scholarship;
 
 import java.util.List;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.io.OutputStream;
-import java.io.InputStream;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 
 public class APIService {
 
@@ -41,8 +38,7 @@ public class APIService {
         } else {
             try {
                 System.out.println("Fetching scholarships from API server...");
-                String token = loadApiToken();
-                json = sendRequest(token);
+                json = fetchFromAPI();
                 saveCache(json);
                 try {
                     saveBundledScholarships(json);
@@ -60,18 +56,39 @@ public class APIService {
         return List.of();
     }
 
-    //This method is for retrieving the API token from local files
-    private String loadApiToken() {
+    //This method is for retrieving the API tokens from local files
+    private List<String> loadApiTokens() {
         Properties properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
                 throw new RuntimeException("config.properties is not found.");
             }
             properties.load(input);
-            return properties.getProperty("apify.token");
+            String tokenString = properties.getProperty("api.tokens");
+            if(tokenString == null || tokenString.isBlank()){
+                throw new RuntimeException("No API tokens are configured");
+            }
+            return Arrays.stream(tokenString.split(", ")).map(String::trim).filter(token->!token.isEmpty()).toList();
         } catch (IOException e) {
-            throw new RuntimeException("Unable to read API token.", e);
+            throw new RuntimeException("Unable to read API tokens", e);
         }
+    }
+
+    //This method is used to try each of the API tokens to fetch scholarship data
+    private String fetchFromAPI(){
+        List<String> tokens = loadApiTokens();
+        RuntimeException lastException = null;
+        int index = 1;
+        for(String token : tokens){
+            try{
+                return sendRequest(token);
+            }catch(RuntimeException e){
+                System.out.println("API token #" + index + " failed. Trying next token...");
+                lastException = e;
+                index++;
+            }
+        }
+        throw new RuntimeException("All API tokens failed", lastException);
     }
 
     //This method is for creating the JSON request body with the input parameters to be sent to the Apify API
