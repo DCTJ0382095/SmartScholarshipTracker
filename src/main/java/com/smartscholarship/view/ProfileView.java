@@ -155,9 +155,7 @@ public class ProfileView {
         );
 
         notificationButton.setOnAction(event ->
-                System.out.println(
-                        "Notifications screen coming later"
-                )
+                mainApp.showNotifications()
         );
 
         profileButton.setOnAction(event ->

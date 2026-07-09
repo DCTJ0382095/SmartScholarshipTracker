@@ -226,7 +226,7 @@ public class ScholarshipExploreView {
         );
 
         notificationButton.setOnAction(event ->
-                System.out.println("Notifications screen coming later")
+                mainApp.showNotifications()
         );
 
         navBar.getChildren().addAll(

@@ -20,14 +20,18 @@ public class MainApp extends Application {
 
         stage.setTitle("SmartScholar");
         stage.setScene(scene);
-        stage.setMinWidth(1000);
-        stage.setMinHeight(700);
+        stage.setMinWidth(900);
+        stage.setMinHeight(650);
         stage.show();
     }
 
     public void showProfile() {
-        ProfileView profileView = new ProfileView(this);
-        scene.setRoot(profileView.getView());
+        ProfileView profileView =
+                new ProfileView(this);
+
+        scene.setRoot(
+                profileView.getView()
+        );
     }
 
     public void showScholarshipExplore() {
@@ -45,6 +49,15 @@ public class MainApp extends Application {
 
         scene.setRoot(
                 applicationView.getView()
+        );
+    }
+
+    public void showNotifications() {
+        NotificationView notificationView =
+                new NotificationView(this);
+
+        scene.setRoot(
+                notificationView.getView()
         );
     }
 
