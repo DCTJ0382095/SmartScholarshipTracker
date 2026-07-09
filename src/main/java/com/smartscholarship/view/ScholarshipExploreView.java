@@ -300,6 +300,10 @@ public class ScholarshipExploreView {
                 mainApp.showProfile()
         );
 
+        menuButton.setOnAction(event ->
+                mainApp.showAdminDemo()
+        );
+
         navBar.getChildren().addAll(
                 menuButton,
                 brandLabel,

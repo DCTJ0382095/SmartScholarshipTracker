@@ -164,6 +164,10 @@ public class ProfileView {
                 )
         );
 
+        menuButton.setOnAction(event ->
+                mainApp.showAdminDemo()
+        );
+
         navBar.getChildren().addAll(
                 menuButton,
                 brandLabel,

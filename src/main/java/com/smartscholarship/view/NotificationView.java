@@ -184,6 +184,10 @@ public class NotificationView {
                 mainApp.showProfile()
         );
 
+        menuButton.setOnAction(event ->
+                mainApp.showAdminDemo()
+        );
+
         navBar.getChildren().addAll(
                 menuButton,
                 brandLabel,

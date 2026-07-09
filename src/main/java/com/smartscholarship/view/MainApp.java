@@ -61,6 +61,15 @@ public class MainApp extends Application {
         );
     }
 
+    public void showAdminDemo() {
+        AdminDemoView adminDemoView =
+                new AdminDemoView(this);
+
+        scene.setRoot(
+                adminDemoView.getView()
+        );
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

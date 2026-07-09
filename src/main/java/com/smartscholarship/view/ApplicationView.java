@@ -139,6 +139,10 @@ public class ApplicationView {
                 mainApp.showNotifications()
         );
 
+        menuButton.setOnAction(event ->
+                mainApp.showAdminDemo()
+        );
+
         navBar.getChildren().addAll(
                 menuButton,
                 brandLabel,
