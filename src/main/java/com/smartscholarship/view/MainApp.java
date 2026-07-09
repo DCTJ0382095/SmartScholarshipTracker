@@ -6,11 +6,17 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
+    private Stage stage;
+    private Scene scene;
+
     @Override
     public void start(Stage stage) {
-        ProfileView profileView = new ProfileView();
+        this.stage = stage;
 
-        Scene scene = new Scene(
+        ProfileView profileView =
+                new ProfileView(this);
+
+        scene = new Scene(
                 profileView.getView(),
                 1100,
                 800
@@ -21,5 +27,23 @@ public class MainApp extends Application {
         stage.setMinWidth(900);
         stage.setMinHeight(700);
         stage.show();
+    }
+
+    public void showProfile() {
+        ProfileView profileView =
+                new ProfileView(this);
+
+        scene.setRoot(
+                profileView.getView()
+        );
+    }
+
+    public void showScholarshipExplore() {
+        ScholarshipExploreView exploreView =
+                new ScholarshipExploreView(this);
+
+        scene.setRoot(
+                exploreView.getView()
+        );
     }
 }

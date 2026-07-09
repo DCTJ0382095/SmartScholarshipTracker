@@ -3,8 +3,8 @@ package com.smartscholarship.view;
 import com.smartscholarship.controller.ProfileController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -16,6 +16,7 @@ public class ProfileView {
 
     private final BorderPane root;
     private final ProfileController controller;
+    private final MainApp mainApp;
 
     private final TextField nameField;
     private final Spinner<Integer> ageSpinner;
@@ -29,13 +30,17 @@ public class ProfileView {
     private final CheckBox privacyCheckBox;
     private final CheckBox notificationCheckBox;
 
-    private static final Color PURPLE = Color.web("#6237BE");
-    private static final Color DARK_PURPLE = Color.web("#32156F");
-    private static final Color TEXT_PURPLE = Color.web("#4A2A91");
+    private static final Color PURPLE =
+            Color.web("#6237BE");
 
-    public ProfileView() {
-        controller = new ProfileController();
-        root = new BorderPane();
+    private static final Color TEXT_PURPLE =
+            Color.web("#4A2A91");
+
+    public ProfileView(MainApp mainApp) {
+
+        this.mainApp = mainApp;
+        this.controller = new ProfileController();
+        this.root = new BorderPane();
 
         nameField = createTextField("Type...");
         ageSpinner = new Spinner<>(16, 100, 18);
@@ -58,12 +63,23 @@ public class ProfileView {
     }
 
     private void buildUI() {
-        root.setStyle("-fx-background-color: #FFFFFF;");
-        root.setTop(createNavigationBar());
 
-        ScrollPane scrollPane = new ScrollPane(createProfileContent());
+        root.setStyle(
+                "-fx-background-color: #FFFFFF;"
+        );
+
+        root.setTop(
+                createNavigationBar()
+        );
+
+        ScrollPane scrollPane =
+                new ScrollPane(
+                        createProfileContent()
+                );
+
         scrollPane.setFitToWidth(true);
         scrollPane.setPannable(true);
+
         scrollPane.setStyle(
                 "-fx-background: #FFFFFF;" +
                         "-fx-background-color: #FFFFFF;" +
@@ -73,62 +89,76 @@ public class ProfileView {
         root.setCenter(scrollPane);
     }
 
-    // =========================================================
-    // NAVIGATION BAR
-    // =========================================================
-
     private HBox createNavigationBar() {
+
         HBox navBar = new HBox();
+
         navBar.setAlignment(Pos.CENTER_LEFT);
-        navBar.setPadding(new Insets(0, 28, 0, 28));
+
+        navBar.setPadding(
+                new Insets(0, 28, 0, 28)
+        );
+
         navBar.setSpacing(20);
         navBar.setPrefHeight(82);
 
         navBar.setStyle(
-                "-fx-background-color: linear-gradient(" +
-                        "to right, #673AB7, #32156F);" +
-                        "-fx-effect: dropshadow(" +
-                        "gaussian, rgba(0,0,0,0.22), 5, 0, 0, 2);"
+                "-fx-background-color: linear-gradient(to right, #673AB7, #32156F);" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 5, 0, 0, 2);"
         );
 
-        Button menuButton = createIconButton(createMenuIcon());
+        Button menuButton =
+                createIconButton(
+                        createMenuIcon()
+                );
 
-        Label brandLabel = new Label("SmartScholar");
+        Label brandLabel =
+                new Label("SmartScholar");
+
         brandLabel.setTextFill(Color.WHITE);
+
         brandLabel.setFont(
-                Font.font("Arial", FontWeight.BOLD, 25)
+                Font.font(
+                        "Arial",
+                        FontWeight.BOLD,
+                        25
+                )
         );
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button homeButton =
-                createIconButton(createHomeIcon());
+                createIconButton(
+                        createHomeIcon()
+                );
 
         Button applicationButton =
-                createIconButton(createClipboardIcon());
+                createIconButton(
+                        createClipboardIcon()
+                );
 
         Button notificationButton =
-                createIconButton(createBellIcon());
+                createIconButton(
+                        createBellIcon()
+                );
 
         Button profileButton =
                 createActiveProfileButton();
 
         homeButton.setOnAction(event ->
-                System.out.println(
-                        "Explore screen - coming in Feature 2"
-                )
+                mainApp.showScholarshipExplore()
         );
 
         applicationButton.setOnAction(event ->
                 System.out.println(
-                        "Applications screen - coming later"
+                        "Applications screen coming later"
                 )
         );
 
         notificationButton.setOnAction(event ->
                 System.out.println(
-                        "Notifications screen - coming later"
+                        "Notifications screen coming later"
                 )
         );
 
@@ -152,7 +182,9 @@ public class ProfileView {
     }
 
     private Button createIconButton(Node icon) {
+
         Button button = new Button();
+
         button.setGraphic(icon);
 
         button.setMinSize(42, 42);
@@ -170,24 +202,29 @@ public class ProfileView {
         return button;
     }
 
-    // Hamburger icon
     private Node createMenuIcon() {
+
         VBox lines = new VBox(5);
         lines.setAlignment(Pos.CENTER);
 
         for (int i = 0; i < 3; i++) {
-            Rectangle line = new Rectangle(24, 3);
+
+            Rectangle line =
+                    new Rectangle(24, 3);
+
             line.setArcWidth(2);
             line.setArcHeight(2);
             line.setFill(Color.WHITE);
+
             lines.getChildren().add(line);
         }
 
         return lines;
     }
 
-    // Home icon
+
     private Node createHomeIcon() {
+
         Group group = new Group();
 
         Polyline roof = new Polyline(
@@ -199,8 +236,6 @@ public class ProfileView {
         roof.setFill(Color.TRANSPARENT);
         roof.setStroke(Color.WHITE);
         roof.setStrokeWidth(1.8);
-        roof.setStrokeLineCap(StrokeLineCap.ROUND);
-        roof.setStrokeLineJoin(StrokeLineJoin.ROUND);
 
         Path house = new Path(
                 new MoveTo(5, 10),
@@ -212,10 +247,10 @@ public class ProfileView {
         house.setFill(Color.TRANSPARENT);
         house.setStroke(Color.WHITE);
         house.setStrokeWidth(1.8);
-        house.setStrokeLineCap(StrokeLineCap.ROUND);
-        house.setStrokeLineJoin(StrokeLineJoin.ROUND);
 
-        Rectangle door = new Rectangle(9, 15, 4, 6);
+        Rectangle door =
+                new Rectangle(9, 15, 4, 6);
+
         door.setFill(Color.TRANSPARENT);
         door.setStroke(Color.WHITE);
         door.setStrokeWidth(1.5);
@@ -229,13 +264,12 @@ public class ProfileView {
         return group;
     }
 
-    // Clipboard / Applications icon
     private Node createClipboardIcon() {
+
         Group group = new Group();
 
-        Rectangle board = new Rectangle(
-                3, 5, 16, 18
-        );
+        Rectangle board =
+                new Rectangle(3, 5, 16, 18);
 
         board.setArcWidth(3);
         board.setArcHeight(3);
@@ -243,13 +277,12 @@ public class ProfileView {
         board.setStroke(Color.WHITE);
         board.setStrokeWidth(1.8);
 
-        Rectangle clip = new Rectangle(
-                7, 2, 8, 5
-        );
+        Rectangle clip =
+                new Rectangle(7, 2, 8, 5);
 
         clip.setArcWidth(3);
         clip.setArcHeight(3);
-        clip.setFill(Color.web("#4A238E"));
+        clip.setFill(Color.TRANSPARENT);
         clip.setStroke(Color.WHITE);
         clip.setStrokeWidth(1.6);
 
@@ -261,69 +294,66 @@ public class ProfileView {
         return group;
     }
 
-    // Bell icon
+
     private Node createBellIcon() {
+
         Group group = new Group();
 
         Path bell = new Path(
                 new MoveTo(4, 17),
+
                 new CubicCurveTo(
                         6, 15,
                         6, 13,
                         6, 9
                 ),
+
                 new CubicCurveTo(
                         6, 4,
                         9, 2,
                         12, 2
                 ),
+
                 new CubicCurveTo(
                         15, 2,
                         18, 4,
                         18, 9
                 ),
+
                 new CubicCurveTo(
                         18, 13,
                         18, 15,
                         20, 17
                 ),
+
                 new ClosePath()
         );
 
         bell.setFill(Color.TRANSPARENT);
         bell.setStroke(Color.WHITE);
         bell.setStrokeWidth(1.8);
-        bell.setStrokeLineJoin(StrokeLineJoin.ROUND);
 
-        Line bottom = new Line(4, 17, 20, 17);
+        Line bottom =
+                new Line(4, 17, 20, 17);
+
         bottom.setStroke(Color.WHITE);
         bottom.setStrokeWidth(1.8);
 
-        Arc clapper = new Arc(
-                12, 18,
-                3, 3,
-                180, 180
-        );
-
-        clapper.setType(ArcType.OPEN);
-        clapper.setFill(Color.TRANSPARENT);
-        clapper.setStroke(Color.WHITE);
-        clapper.setStrokeWidth(1.5);
-
         group.getChildren().addAll(
                 bell,
-                bottom,
-                clapper
+                bottom
         );
 
         return group;
     }
 
-    // Active profile icon like Figma
+
     private Button createActiveProfileButton() {
+
         Button button = new Button();
 
         StackPane circle = new StackPane();
+
         circle.setMinSize(42, 42);
         circle.setPrefSize(42, 42);
         circle.setMaxSize(42, 42);
@@ -355,18 +385,19 @@ public class ProfileView {
         return button;
     }
 
-    // =========================================================
-    // PROFILE CONTENT
-    // =========================================================
 
     private VBox createProfileContent() {
+
         VBox page = new VBox(25);
+
         page.setPadding(
                 new Insets(45, 70, 60, 70)
         );
 
         Label title = new Label("Profile");
+
         title.setTextFill(TEXT_PURPLE);
+
         title.setFont(
                 Font.font(
                         "Arial",
@@ -378,10 +409,16 @@ public class ProfileView {
         HBox mainContent = new HBox(55);
         mainContent.setAlignment(Pos.TOP_LEFT);
 
-        VBox avatarSection = createAvatarSection();
-        GridPane formGrid = createFormGrid();
+        VBox avatarSection =
+                createAvatarSection();
 
-        HBox.setHgrow(formGrid, Priority.ALWAYS);
+        GridPane formGrid =
+                createFormGrid();
+
+        HBox.setHgrow(
+                formGrid,
+                Priority.ALWAYS
+        );
 
         mainContent.getChildren().addAll(
                 avatarSection,
@@ -396,27 +433,34 @@ public class ProfileView {
         return page;
     }
 
-    // =========================================================
-    // AVATAR - FIXED EDIT BUTTON POSITION
-    // =========================================================
-
     private VBox createAvatarSection() {
+
         VBox avatarBox = new VBox();
-        avatarBox.setAlignment(Pos.TOP_CENTER);
+
+        avatarBox.setAlignment(
+                Pos.TOP_CENTER
+        );
+
         avatarBox.setPrefWidth(190);
 
-        StackPane avatarStack = new StackPane();
+        StackPane avatarStack =
+                new StackPane();
+
         avatarStack.setPrefSize(170, 170);
         avatarStack.setMinSize(170, 170);
         avatarStack.setMaxSize(170, 170);
 
-        Circle avatarCircle = new Circle(76);
+        Circle avatarCircle =
+                new Circle(76);
+
         avatarCircle.setFill(
                 Color.web("#D9D9D9")
         );
+
         avatarCircle.setStroke(
                 Color.web("#BDBDBD")
         );
+
         avatarCircle.setStrokeWidth(2);
 
         Node largePersonIcon =
@@ -425,15 +469,13 @@ public class ProfileView {
                         58
                 );
 
-        // Separate overlay pane prevents the edit button
-        // from being centered by StackPane.
         Pane overlayPane = new Pane();
         overlayPane.setPickOnBounds(false);
 
         StackPane editBadge =
                 createEditBadge();
 
-        // Figma-like lower-right position
+
         editBadge.setLayoutX(126);
         editBadge.setLayoutY(111);
 
@@ -455,16 +497,20 @@ public class ProfileView {
     }
 
     private StackPane createEditBadge() {
+
         StackPane badge = new StackPane();
 
         badge.setMinSize(42, 42);
         badge.setPrefSize(42, 42);
         badge.setMaxSize(42, 42);
 
-        Circle background = new Circle(21);
+        Circle background =
+                new Circle(21);
+
         background.setFill(PURPLE);
 
-        Node pencil = createPencilIcon();
+        Node pencil =
+                createPencilIcon();
 
         badge.getChildren().addAll(
                 background,
@@ -479,11 +525,11 @@ public class ProfileView {
     }
 
     private Node createPencilIcon() {
+
         Group group = new Group();
 
-        Rectangle body = new Rectangle(
-                4, 9, 16, 4
-        );
+        Rectangle body =
+                new Rectangle(4, 9, 16, 4);
 
         body.setArcWidth(2);
         body.setArcHeight(2);
@@ -511,18 +557,16 @@ public class ProfileView {
         return group;
     }
 
-    // Reusable person icon
+
     private Node createPersonIcon(
             Color color,
             double size
     ) {
+
         Group group = new Group();
 
-        double scale = size / 24.0;
-
-        Circle head = new Circle(
-                12, 7, 4
-        );
+        Circle head =
+                new Circle(12, 7, 4);
 
         head.setFill(Color.TRANSPARENT);
         head.setStroke(color);
@@ -530,30 +574,32 @@ public class ProfileView {
 
         Path shoulders = new Path(
                 new MoveTo(4, 22),
+
                 new CubicCurveTo(
                         4, 15,
                         8, 13,
                         12, 13
                 ),
+
                 new CubicCurveTo(
                         16, 13,
                         20, 15,
                         20, 22
                 ),
+
                 new ClosePath()
         );
 
         shoulders.setFill(Color.TRANSPARENT);
         shoulders.setStroke(color);
         shoulders.setStrokeWidth(2.2);
-        shoulders.setStrokeLineJoin(
-                StrokeLineJoin.ROUND
-        );
 
         group.getChildren().addAll(
                 head,
                 shoulders
         );
+
+        double scale = size / 24.0;
 
         group.setScaleX(scale);
         group.setScaleY(scale);
@@ -561,11 +607,9 @@ public class ProfileView {
         return group;
     }
 
-    // =========================================================
-    // FORM
-    // =========================================================
 
     private GridPane createFormGrid() {
+
         GridPane grid = new GridPane();
 
         grid.setHgap(45);
@@ -589,18 +633,30 @@ public class ProfileView {
         );
 
         grid.add(
-                createFieldBox("Name", nameField),
-                0, 0
+                createFieldBox(
+                        "Name",
+                        nameField
+                ),
+                0,
+                0
         );
 
         grid.add(
-                createFieldBox("Age", ageSpinner),
-                1, 0
+                createFieldBox(
+                        "Age",
+                        ageSpinner
+                ),
+                1,
+                0
         );
 
         grid.add(
-                createFieldBox("Gmail", gmailField),
-                0, 1
+                createFieldBox(
+                        "Gmail",
+                        gmailField
+                ),
+                0,
+                1
         );
 
         grid.add(
@@ -608,12 +664,17 @@ public class ProfileView {
                         "Mobile Number",
                         mobileField
                 ),
-                1, 1
+                1,
+                1
         );
 
         grid.add(
-                createFieldBox("School", schoolField),
-                0, 2
+                createFieldBox(
+                        "School",
+                        schoolField
+                ),
+                0,
+                2
         );
 
         grid.add(
@@ -621,12 +682,17 @@ public class ProfileView {
                         "Field of Study",
                         fieldOfStudyField
                 ),
-                1, 2
+                1,
+                2
         );
 
         grid.add(
-                createFieldBox("GPA", gpaField),
-                0, 3
+                createFieldBox(
+                        "GPA",
+                        gpaField
+                ),
+                0,
+                3
         );
 
         grid.add(
@@ -634,22 +700,29 @@ public class ProfileView {
                         "Household Income (USD/year)",
                         incomeField
                 ),
-                1, 3
+                1,
+                3
         );
 
-        VBox consentBox = createConsentSection();
+        VBox consentBox =
+                createConsentSection();
 
         grid.add(
                 consentBox,
-                0, 4,
-                2, 1
+                0,
+                4,
+                2,
+                1
         );
 
         return grid;
     }
 
+
     private VBox createConsentSection() {
-        VBox consentBox = new VBox(8);
+
+        VBox consentBox =
+                new VBox(8);
 
         consentBox.setPadding(
                 new Insets(20, 0, 0, 0)
@@ -678,20 +751,24 @@ public class ProfileView {
                         "-fx-cursor: hand;"
         );
 
-        submitButton.setOnAction(event ->
-                controller.handleSubmit(
-                        nameField,
-                        ageSpinner,
-                        gmailField,
-                        mobileField,
-                        schoolField,
-                        fieldOfStudyField,
-                        gpaField,
-                        incomeField,
-                        privacyCheckBox,
-                        notificationCheckBox
-                )
-        );
+
+        submitButton.setOnAction(event -> {
+
+            controller.handleSubmit(
+                    nameField,
+                    ageSpinner,
+                    gmailField,
+                    mobileField,
+                    schoolField,
+                    fieldOfStudyField,
+                    gpaField,
+                    incomeField,
+                    privacyCheckBox,
+                    notificationCheckBox
+            );
+
+            mainApp.showScholarshipExplore();
+        });
 
         VBox.setMargin(
                 submitButton,
@@ -711,9 +788,12 @@ public class ProfileView {
             String labelText,
             Node input
     ) {
+
         VBox box = new VBox(8);
 
-        Label label = new Label(labelText);
+        Label label =
+                new Label(labelText);
+
         label.setTextFill(
                 Color.web("#5B5277")
         );
@@ -748,7 +828,9 @@ public class ProfileView {
     private TextField createTextField(
             String promptText
     ) {
-        TextField field = new TextField();
+
+        TextField field =
+                new TextField();
 
         field.setPromptText(promptText);
         field.setPrefHeight(42);
