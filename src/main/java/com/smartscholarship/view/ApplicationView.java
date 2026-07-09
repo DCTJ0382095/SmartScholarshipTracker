@@ -100,10 +100,10 @@ public class ApplicationView {
         HBox navBar = new HBox(26);
 
         navBar.setAlignment(Pos.CENTER_LEFT);
-        navBar.setPadding(new Insets(0, 35, 0, 35));
-        navBar.setPrefHeight(102);
-        navBar.setMinHeight(102);
-        navBar.setMaxHeight(102);
+        navBar.setPadding(new Insets(0, 28, 0, 28));
+        navBar.setPrefHeight(82);
+        navBar.setMinHeight(82);
+        navBar.setMaxHeight(82);
 
         navBar.setStyle(
                 "-fx-background-color: linear-gradient(to right, #673AB7, #32156F);"
@@ -113,7 +113,7 @@ public class ApplicationView {
 
         Label brandLabel = new Label("SmartScholar");
         brandLabel.setTextFill(Color.WHITE);
-        brandLabel.setFont(Font.font("Arial", FontWeight.BOLD, 30));
+        brandLabel.setFont(Font.font("Arial", FontWeight.BOLD, 25));
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -159,7 +159,7 @@ public class ApplicationView {
     private VBox createPageContent() {
         VBox page = new VBox();
 
-        page.setPadding(new Insets(50, 80, 70, 80));
+        page.setPadding(new Insets(32, 55, 50, 55));
         page.setSpacing(20);
         page.setAlignment(Pos.TOP_LEFT);
         page.setStyle("-fx-background-color: white;");
@@ -169,7 +169,7 @@ public class ApplicationView {
 
         Label title = new Label("My Applications");
         title.setTextFill(Color.web(TEXT_PURPLE));
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 38));
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 30));
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -208,27 +208,27 @@ public class ApplicationView {
     private StackPane createSearchBar() {
         StackPane container = new StackPane();
 
-        container.setMinWidth(300);
-        container.setPrefWidth(300);
-        container.setMaxWidth(300);
+        container.setMinWidth(270);
+        container.setPrefWidth(270);
+        container.setMaxWidth(270);
 
-        container.setMinHeight(48);
-        container.setPrefHeight(48);
-        container.setMaxHeight(48);
+        container.setMinHeight(38);
+        container.setPrefHeight(38);
+        container.setMaxHeight(38);
 
         searchField.setPromptText("Search...");
-        searchField.setMinHeight(48);
-        searchField.setPrefHeight(48);
-        searchField.setMaxHeight(48);
+        searchField.setMinHeight(38);
+        searchField.setPrefHeight(38);
+        searchField.setMaxHeight(38);
 
         searchField.setStyle(
                 "-fx-background-color: #E8E2F0;" +
-                        "-fx-background-radius: 24;" +
-                        "-fx-border-radius: 24;" +
+                        "-fx-background-radius: 20;" +
+                        "-fx-border-radius: 20;" +
                         "-fx-border-color: transparent;" +
                         "-fx-padding: 0 48 0 22;" +
                         "-fx-font-family: Arial;" +
-                        "-fx-font-size: 14px;" +
+                        "-fx-font-size: 12px;" +
                         "-fx-prompt-text-fill: #A79DB4;" +
                         "-fx-text-fill: #5A4A72;"
         );
@@ -625,9 +625,9 @@ public class ApplicationView {
         button.setGraphic(icon);
         button.setAlignment(Pos.CENTER);
 
-        button.setMinSize(54, 54);
-        button.setPrefSize(54, 54);
-        button.setMaxSize(54, 54);
+        button.setMinSize(42, 42);
+        button.setPrefSize(42, 42);
+        button.setMaxSize(42, 42);
 
         button.setStyle(
                 "-fx-background-color: transparent;" +
@@ -643,9 +643,9 @@ public class ApplicationView {
 
         StackPane circle = new StackPane();
 
-        circle.setMinSize(58, 58);
-        circle.setPrefSize(58, 58);
-        circle.setMaxSize(58, 58);
+        circle.setMinSize(42, 42);
+        circle.setPrefSize(42, 42);
+        circle.setMaxSize(42, 42);
 
         circle.setStyle(
                 "-fx-background-color: #E8DFF7;" +
@@ -660,9 +660,9 @@ public class ApplicationView {
 
         button.setGraphic(circle);
 
-        button.setMinSize(62, 62);
-        button.setPrefSize(62, 62);
-        button.setMaxSize(62, 62);
+        button.setMinSize(46, 46);
+        button.setPrefSize(46, 46);
+        button.setMaxSize(46, 46);
 
         button.setStyle(
                 "-fx-background-color: transparent;" +
