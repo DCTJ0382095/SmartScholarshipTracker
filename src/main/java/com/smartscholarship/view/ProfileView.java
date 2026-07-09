@@ -151,9 +151,7 @@ public class ProfileView {
         );
 
         applicationButton.setOnAction(event ->
-                System.out.println(
-                        "Applications screen coming later"
-                )
+                mainApp.showApplications()
         );
 
         notificationButton.setOnAction(event ->

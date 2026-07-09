@@ -6,15 +6,11 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-    private Stage stage;
     private Scene scene;
 
     @Override
     public void start(Stage stage) {
-        this.stage = stage;
-
-        ProfileView profileView =
-                new ProfileView(this);
+        ProfileView profileView = new ProfileView(this);
 
         scene = new Scene(
                 profileView.getView(),
@@ -24,26 +20,35 @@ public class MainApp extends Application {
 
         stage.setTitle("SmartScholar");
         stage.setScene(scene);
-        stage.setMinWidth(900);
+        stage.setMinWidth(1000);
         stage.setMinHeight(700);
         stage.show();
     }
 
     public void showProfile() {
-        ProfileView profileView =
-                new ProfileView(this);
-
-        scene.setRoot(
-                profileView.getView()
-        );
+        ProfileView profileView = new ProfileView(this);
+        scene.setRoot(profileView.getView());
     }
 
     public void showScholarshipExplore() {
-        ScholarshipExploreView exploreView =
+        ScholarshipExploreView scholarshipExploreView =
                 new ScholarshipExploreView(this);
 
         scene.setRoot(
-                exploreView.getView()
+                scholarshipExploreView.getView()
         );
+    }
+
+    public void showApplications() {
+        ApplicationView applicationView =
+                new ApplicationView(this);
+
+        scene.setRoot(
+                applicationView.getView()
+        );
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
