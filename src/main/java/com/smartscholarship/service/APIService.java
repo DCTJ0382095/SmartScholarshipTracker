@@ -30,6 +30,7 @@ public class APIService {
     private static final Path CACHE_FILE = CACHE_DIRECTORY.resolve("scholarships.json");
     private static final Path CACHE_PROPERTIES = CACHE_DIRECTORY.resolve("cache.properties");
     private static final Duration CACHE_TTL = Duration.ofHours(24);
+    private static final Path SEED_FILE = Path.of("src", "main", "resources", "seed", "scholarships.json");
 
     //This method is the main function
     public List<Scholarship> fetchScholarships() {
@@ -38,10 +39,20 @@ public class APIService {
             System.out.println("Loading scholarships from cache...");
             json = readCache();
         } else {
-            System.out.println("Fetching scholarships from API...");
-            String token = loadApiToken();
-            json = sendRequest(token);
-            saveCache(json);
+            try {
+                System.out.println("Fetching scholarships from API server...");
+                String token = loadApiToken();
+                json = sendRequest(token);
+                saveCache(json);
+                try {
+                    saveBundledScholarships(json);
+                } catch (RuntimeException e) {
+                    System.out.println("Unable to update bundled scholarship data");
+                }
+            } catch (RuntimeException e) {
+                System.out.println("API server is unavailable. Loading bundled scholarship data...");
+                json = loadBundledScholarships();
+            }
         }
 
         //This is temporary until Scholarship.java is ready to use
@@ -88,7 +99,7 @@ public class APIService {
     private void validateResponse(HttpResponse<String> response) {
         int statusCode = response.statusCode();
         if (statusCode != 201) {
-            throw new RuntimeException("Apify request failed. HTTP Status: " + response.statusCode() + "\nResponse: " + response.body());
+            throw new RuntimeException("API request failed. HTTP Status: " + response.statusCode() + "\nResponse: " + response.body());
         }
     }
 
@@ -103,7 +114,7 @@ public class APIService {
             validateResponse(response);
             return response.body();
         } catch (IOException e) {
-            throw new RuntimeException("Unable to connect to the Apify API. Please check your Internet connection.", e);
+            throw new RuntimeException("Unable to connect to the API. Please check your Internet connection.", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("The API request was interrupted.", e);
@@ -183,5 +194,26 @@ public class APIService {
         LocalDateTime lastUpdated = getCacheTimestamp();
         Duration cacheAge = Duration.between(lastUpdated, LocalDateTime.now());
         return cacheAge.compareTo(CACHE_TTL) < 0;
+    }
+
+    //This method is used to load the scholarship data that came bundled with the application
+    private String loadBundledScholarships() {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("seed/scholarships.json")) {
+            if (input == null) {
+                throw new RuntimeException("Bundled scholarship data not found");
+            }
+            return new String(input.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load bundled scholarship data", e);
+        }
+    }
+
+    //This method is used to rewrite the bundled scholarship data everytime new scholarship information is retrieved
+    private void saveBundledScholarships(String json) {
+        try {
+            Files.writeString(SEED_FILE, json, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to update bundled scholarship data", e);
+        }
     }
 }
