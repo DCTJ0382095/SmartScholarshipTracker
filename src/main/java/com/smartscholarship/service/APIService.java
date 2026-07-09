@@ -2,6 +2,7 @@ package com.smartscholarship.service;
 
 import com.smartscholarship.model.Scholarship;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,16 +19,19 @@ import java.time.LocalDateTime;
 import java.io.OutputStream;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class APIService {
 
     private static final String API_URL = "https://api.apify.com/v2/acts/commanding_hotdog~scholarship-finder-scraper/run-sync-get-dataset-items?token=";
-    private static final int MAX_RESULTS = 50;
     private static final Path CACHE_DIRECTORY = Path.of("cache");
     private static final Path CACHE_FILE = CACHE_DIRECTORY.resolve("scholarships.json");
     private static final Path CACHE_PROPERTIES = CACHE_DIRECTORY.resolve("cache.properties");
     private static final Duration CACHE_TTL = Duration.ofHours(24);
     private static final Path SEED_FILE = Path.of("src", "main", "resources", "seed", "scholarships.json");
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
     //This method is the main function
     public List<Scholarship> fetchScholarships() {
@@ -50,10 +54,7 @@ public class APIService {
                 json = loadBundledScholarships();
             }
         }
-
-        //This is temporary until Scholarship.java is ready to use
-        System.out.println(json);
-        return List.of();
+        return parseScholarships(json);
     }
 
     //This method is for retrieving the API tokens from local files
@@ -127,7 +128,7 @@ public class APIService {
         HttpRequest request = buildRequest(token, requestBody);
         try {
             HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());   //Sends the request
+                    HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());   //Sends the request
             validateResponse(response);
             return response.body();
         } catch (IOException e) {
@@ -136,10 +137,6 @@ public class APIService {
             Thread.currentThread().interrupt();
             throw new RuntimeException("The API request was interrupted.", e);
         }
-    }
-
-    private List<Scholarship> parseScholarships(String json) {
-        return List.of();
     }
 
     //This method is used to check if the local scholarship cache exists
@@ -178,7 +175,6 @@ public class APIService {
         Properties properties = new Properties();
         properties.setProperty("lastUpdated", LocalDateTime.now().toString());
         properties.setProperty("cacheVersion", "1");
-        properties.setProperty("recordCount", String.valueOf(MAX_RESULTS));
         try (OutputStream output = Files.newOutputStream(CACHE_PROPERTIES)) {
             properties.store(output, "Primary Cache Metadata");
         } catch (IOException e) {
@@ -232,5 +228,49 @@ public class APIService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to update bundled scholarship data", e);
         }
+    }
+
+    //This method is used to read the scholarship JSON data and convert each JSON object into a Scholarship object to them store them in a list
+    private List<Scholarship> parseScholarships(String json) {
+        try{
+            JsonNode root = OBJECT_MAPPER.readTree(json);
+            List<Scholarship> scholarships = new ArrayList<>();
+            for (JsonNode node : root){
+                Scholarship scholarship = parseScholarship(node);
+                scholarships.add(scholarship);
+            }
+            return scholarships;
+        }catch(IOException e){
+            throw new RuntimeException("Failed to parse scholarship data", e);
+        }
+    }
+
+    //This method is used to convert a single scholarship JSON object into a Scholarship object.
+    private Scholarship parseScholarship(JsonNode node){
+        Scholarship scholarship = new Scholarship();
+        scholarship.setTitle(getText(node, "title"));
+        scholarship.setDescription(getText(node, "description"));
+        scholarship.setFullDescription(getText(node, "full_description"));
+        scholarship.setAward(getText(node, "award"));
+        scholarship.setDeadline(getText(node, "deadline"));
+        scholarship.setSponsorName(getText(node, "sponsor_name"));
+        scholarship.setSponsorUrl(getText(node, "sponsor_url"));
+        scholarship.setDetailUrl(getText(node, "detail_url"));
+        scholarship.setApplyUrl(getText(node, "apply_url"));
+        scholarship.setAwardType(getText(node, "award_type"));
+        scholarship.setRequirements(getText(node, "requirements"));
+        scholarship.setMajors(getText(node, "majors"));
+        scholarship.setEnrollmentLevel(getText(node, "enrollment_level"));
+        scholarship.setGeographicRestrictions(getText(node, "geographic_restrictions"));
+        return scholarship;
+    }
+
+    //This method is used to retrieve a field from the JSON file
+    private String getText(JsonNode node, String fieldName){
+        JsonNode value = node.get(fieldName);
+        if(value == null || value.isNull()){
+            return "";
+        }
+        return value.asText();
     }
 }

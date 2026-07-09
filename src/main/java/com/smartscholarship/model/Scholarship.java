@@ -1,40 +1,46 @@
 package com.smartscholarship.model;
 
 public class Scholarship {
+
     private String title;
     private String description;
     private String fullDescription;
-
     private String award;
     private String deadline;
-
     private String sponsorName;
     private String sponsorUrl;
-
     private String detailUrl;
     private String applyUrl;
-
     private String awardType;
-
     private String requirements;
     private String gpaRequirement;
     private String majors;
-
     private String enrollmentLevel;
     private String geographicRestrictions;
+    private String enrollmentDetail;
+    private Integer awardAmount;
+    private boolean renewable;
+    private boolean repayRequired;
 
-    // Default Constructor
+    //This is the default constructor
     public Scholarship() {
     }
 
-    // Full Constructor
-    public Scholarship(String title, String description, String fullDescription,
-                       String award, String deadline,
-                       String sponsorName, String sponsorUrl,
-                       String detailUrl, String applyUrl,
+    //This is the full constructor
+    public Scholarship(String title,
+                       String description,
+                       String fullDescription,
+                       String award,
+                       String deadline,
+                       String sponsorName,
+                       String sponsorUrl,
+                       String detailUrl,
+                       String applyUrl,
                        String awardType,
-                       String requirements, String gpaRequirement,
-                       String majors, String enrollmentLevel,
+                       String requirements,
+                       String gpaRequirement,
+                       String majors,
+                       String enrollmentLevel,
                        String geographicRestrictions) {
 
         this.title = title;
@@ -54,7 +60,7 @@ public class Scholarship {
         this.geographicRestrictions = geographicRestrictions;
     }
 
-    // Getters and Setters
+    //This is the getters and setters
     public String getTitle() {
         return title;
     }
@@ -180,8 +186,19 @@ public class Scholarship {
         return "Scholarship{" +
                 "title='" + title + '\'' +
                 ", award='" + award + '\'' +
+                ", awardType='" + awardType + '\'' +
+                ", renewable=" + renewable +
                 ", deadline='" + deadline + '\'' +
+                ", enrollmentLevel='" + enrollmentLevel + '\'' +
+                ", majors='" + majors + '\'' +
                 ", sponsorName='" + sponsorName + '\'' +
+                ", requirements='" + requirements + '\'' +
+                ", description='" + description + '\'' +
+                ", fullDescription='" + fullDescription + '\'' +
+                ", sponsorUrl='" + sponsorUrl + '\'' +
+                ", detailUrl='" + detailUrl + '\'' +
+                ", applyUrl='" + applyUrl + '\'' +
+                ", geographicRestrictions='" + geographicRestrictions + '\'' +
                 '}';
     }
 }

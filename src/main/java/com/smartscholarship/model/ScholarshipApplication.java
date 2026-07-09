@@ -6,9 +6,10 @@ public class ScholarshipApplication {
     private Scholarship scholarship;
     private ApplicationStatus status;
 
-    public ScholarshipApplication() {
-    }
+    //This is the default constructor
+    public ScholarshipApplication() {}
 
+    //This is the full constructor
     public ScholarshipApplication(String applicationID,
                                   Student applicant,
                                   Scholarship scholarship,
@@ -20,35 +21,16 @@ public class ScholarshipApplication {
         this.status = status;
     }
 
-    public String getApplicationID() {
-        return applicationID;
-    }
+    //This is the getters and setters
+    public String getApplicationID() {return applicationID;}
+    public void setApplicationID(String applicationID) {this.applicationID = applicationID;}
 
-    public void setApplicationID(String applicationID) {
-        this.applicationID = applicationID;
-    }
+    public Student getApplicant() {return applicant;}
+    public void setApplicant(Student applicant) {this.applicant = applicant;}
 
-    public Student getApplicant() {
-        return applicant;
-    }
+    public Scholarship getScholarship() {return scholarship;}
+    public void setScholarship(Scholarship scholarship) {this.scholarship = scholarship;}
 
-    public void setApplicant(Student applicant) {
-        this.applicant = applicant;
-    }
-
-    public Scholarship getScholarship() {
-        return scholarship;
-    }
-
-    public void setScholarship(Scholarship scholarship) {
-        this.scholarship = scholarship;
-    }
-
-    public ApplicationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ApplicationStatus status) {
-        this.status = status;
-    }
+    public ApplicationStatus getStatus() {return status;}
+    public void setStatus(ApplicationStatus status) {this.status = status;}
 }
