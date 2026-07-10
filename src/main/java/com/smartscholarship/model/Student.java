@@ -5,7 +5,6 @@ public class Student {
     private String name;
     private double gpa;
     private double householdIncome;
-    private String preferredCountry;
 
     //This is the default constructor
     public Student() {}
@@ -14,13 +13,11 @@ public class Student {
     public Student(String studentID,
                    String name,
                    double gpa,
-                   double householdIncome,
-                   String preferredCountry) {
+                   double householdIncome) {
         this.studentID = studentID;
         this.name = name;
         this.gpa = gpa;
         this.householdIncome = householdIncome;
-        this.preferredCountry = preferredCountry;
     }
 
     //This is the getters and setters
@@ -35,7 +32,4 @@ public class Student {
 
     public double getHouseholdIncome() {return householdIncome;}
     public void setHouseholdIncome(double householdIncome) {this.householdIncome = householdIncome;}
-
-    public String getPreferredCountry() {return preferredCountry;}
-    public void setPreferredCountry(String preferredCountry) {this.preferredCountry = preferredCountry;}
 }
