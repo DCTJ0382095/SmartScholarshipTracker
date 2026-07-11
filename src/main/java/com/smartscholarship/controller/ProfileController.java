@@ -4,6 +4,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
+import com.smartscholarship.model.Student;
+import com.smartscholarship.util.CurrentStudent;
 
 public class ProfileController {
 
@@ -98,16 +100,13 @@ public class ProfileController {
         int age = ageSpinner.getValue();
         boolean notificationsEnabled = notificationCheckBox.isSelected();
 
-        System.out.println("Profile submitted:");
-        System.out.println("Name: " + name);
-        System.out.println("Age: " + age);
-        System.out.println("Gmail: " + gmail);
-        System.out.println("Mobile: " + mobile);
-        System.out.println("School: " + school);
-        System.out.println("Field of Study: " + fieldOfStudy);
-        System.out.println("GPA: " + gpa);
-        System.out.println("Annual Household Income: " + income);
-        System.out.println("Notifications Enabled: " + notificationsEnabled);
+        Student student = new Student();
+        student.setStudentID("S001");
+        student.setName(name);
+        student.setGPA(Double.parseDouble(gpa));
+        student.setHouseholdIncome(Double.parseDouble(income));
+        CurrentStudent.setStudent(student);
+        System.out.println("Student profile saved.");
 
         showAlert(
                 Alert.AlertType.INFORMATION,
