@@ -7,7 +7,12 @@ public class CurrentStudent {
     public static Student getStudent() {
         return currentStudent;
     }
+
     public static void setStudent(Student student) {
         currentStudent = student;
+    }
+
+    public static boolean hasProfile() {
+        return currentStudent != null;
     }
 }

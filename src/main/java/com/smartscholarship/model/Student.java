@@ -5,6 +5,9 @@ public class Student {
     private String name;
     private double gpa;
     private double householdIncome;
+    private int age;
+    private String gmail;
+    private String mobile;
 
     //This is the default constructor
     public Student() {}
@@ -32,4 +35,13 @@ public class Student {
 
     public double getHouseholdIncome() {return householdIncome;}
     public void setHouseholdIncome(double householdIncome) {this.householdIncome = householdIncome;}
+
+    public int getAge() {return age;}
+    public void setAge(int age) {this.age = age;}
+
+    public String getGmail() {return gmail;}
+    public void setGmail(String gmail) {this.gmail = gmail;}
+
+    public String getMobile() {return mobile;}
+    public void setMobile(String mobile) {this.mobile = mobile;}
 }

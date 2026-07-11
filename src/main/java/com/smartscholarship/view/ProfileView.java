@@ -1,6 +1,8 @@
 package com.smartscholarship.view;
 
 import com.smartscholarship.controller.ProfileController;
+import com.smartscholarship.model.Student;
+import com.smartscholarship.util.CurrentStudent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -22,8 +24,6 @@ public class ProfileView {
     private final Spinner<Integer> ageSpinner;
     private final TextField gmailField;
     private final TextField mobileField;
-    private final TextField schoolField;
-    private final TextField fieldOfStudyField;
     private final TextField gpaField;
     private final TextField incomeField;
 
@@ -46,10 +46,18 @@ public class ProfileView {
         ageSpinner = new Spinner<>(16, 100, 18);
         gmailField = createTextField("Type...");
         mobileField = createTextField("Type...");
-        schoolField = createTextField("Type...");
-        fieldOfStudyField = createTextField("Type...");
         gpaField = createTextField("Type...");
         incomeField = createTextField("Type...");
+
+        Student student = CurrentStudent.getStudent();
+        if (student != null) {
+            nameField.setText(student.getName());
+            ageSpinner.getValueFactory().setValue(student.getAge());
+            gmailField.setText(student.getGmail());
+            mobileField.setText(student.getMobile());
+            gpaField.setText(String.valueOf(student.getGPA()));
+            incomeField.setText(String.valueOf(student.getHouseholdIncome()));
+        }
 
         privacyCheckBox = new CheckBox(
                 "I agree to the Privacy Policy and the processing of my personal information."
@@ -60,6 +68,14 @@ public class ProfileView {
         );
 
         buildUI();
+    }
+
+    private void showProfileRequiredAlert() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Profile Required");
+        alert.setHeaderText(null);
+        alert.setContentText("Please complete and submit your profile before accessing other features.");
+        alert.showAndWait();
     }
 
     private void buildUI() {
@@ -146,17 +162,29 @@ public class ProfileView {
         Button profileButton =
                 createActiveProfileButton();
 
-        homeButton.setOnAction(event ->
-                mainApp.showScholarshipExplore()
-        );
+        homeButton.setOnAction(event -> {
+            if(!CurrentStudent.hasProfile()){
+                showProfileRequiredAlert();
+                return;
+            }
+            mainApp.showApplications();
+        });
 
-        applicationButton.setOnAction(event ->
-                mainApp.showApplications()
-        );
+        applicationButton.setOnAction(event -> {
+            if (!CurrentStudent.hasProfile()) {
+                showProfileRequiredAlert();
+                return;
+            }
+            mainApp.showApplications();
+        });
 
-        notificationButton.setOnAction(event ->
-                mainApp.showNotifications()
-        );
+        notificationButton.setOnAction(event -> {
+            if (!CurrentStudent.hasProfile()) {
+                showProfileRequiredAlert();
+                return;
+            }
+            mainApp.showNotifications();
+        });
 
         profileButton.setOnAction(event ->
                 System.out.println(
@@ -164,9 +192,13 @@ public class ProfileView {
                 )
         );
 
-        menuButton.setOnAction(event ->
-                mainApp.showAdminDemo()
-        );
+        menuButton.setOnAction(event -> {
+            if (!CurrentStudent.hasProfile()) {
+                showProfileRequiredAlert();
+                return;
+            }
+            mainApp.showAdminDemo();
+        });
 
         navBar.getChildren().addAll(
                 menuButton,
@@ -670,29 +702,11 @@ public class ProfileView {
 
         grid.add(
                 createFieldBox(
-                        "School",
-                        schoolField
-                ),
-                0,
-                2
-        );
-
-        grid.add(
-                createFieldBox(
-                        "Field of Study",
-                        fieldOfStudyField
-                ),
-                1,
-                2
-        );
-
-        grid.add(
-                createFieldBox(
                         "GPA",
                         gpaField
                 ),
                 0,
-                3
+                2
         );
 
         grid.add(
@@ -701,7 +715,7 @@ public class ProfileView {
                         incomeField
                 ),
                 1,
-                3
+                2
         );
 
         VBox consentBox =
@@ -754,20 +768,20 @@ public class ProfileView {
 
         submitButton.setOnAction(event -> {
 
-            controller.handleSubmit(
+            boolean success = controller.handleSubmit(
                     nameField,
                     ageSpinner,
                     gmailField,
                     mobileField,
-                    schoolField,
-                    fieldOfStudyField,
                     gpaField,
                     incomeField,
                     privacyCheckBox,
                     notificationCheckBox
             );
+            if(success){
+                mainApp.showScholarshipExplore();
+            }
 
-            mainApp.showScholarshipExplore();
         });
 
         VBox.setMargin(
