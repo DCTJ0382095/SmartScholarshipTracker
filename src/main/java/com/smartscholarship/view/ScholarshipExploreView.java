@@ -3,6 +3,7 @@ package com.smartscholarship.view;
 import com.smartscholarship.controller.ScholarshipExploreController;
 import com.smartscholarship.model.Scholarship;
 import com.smartscholarship.service.APIService;
+import com.smartscholarship.service.ClassificationService;
 import com.smartscholarship.service.EligibilityService;
 import com.smartscholarship.util.CurrentStudent;
 import com.smartscholarship.model.Student;
@@ -61,6 +62,7 @@ public class ScholarshipExploreView {
     private final List<Scholarship> scholarships = new ArrayList<>();
     private final APIService apiService = new APIService();
     private final EligibilityService eligibilityService = new EligibilityService();
+    private final ClassificationService classificationService;
 
     public ScholarshipExploreView(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -69,6 +71,7 @@ public class ScholarshipExploreView {
         this.searchField = new TextField();
         this.scholarshipGrid = new GridPane();
         APIService apiService = new APIService();
+        classificationService = new ClassificationService();
         scholarships.addAll(apiService.fetchScholarships());
         controller.setRefreshAction(this::refreshScholarships);
         buildUI();
@@ -389,8 +392,9 @@ public class ScholarshipExploreView {
                             if (selectedCategory.equals("All")) {
                                 return true;
                             }
-                            return scholarship.getAwardType()
-                                    .equalsIgnoreCase(selectedCategory);
+                            return getCategoryText(scholarship)
+                                    .toLowerCase()
+                                    .contains(selectedCategory.toLowerCase());
                         })
                         .filter(scholarship ->
                                 keyword.isEmpty()
@@ -644,19 +648,7 @@ public class ScholarshipExploreView {
         ScholarshipDetailsView detailsView =
                 new ScholarshipDetailsView(
                         root.getScene().getWindow(),
-                        scholarship.getTitle(),
-                        scholarship.getSponsorName(),
-                        scholarship.getAwardType(),
-                        scholarship.getAward(),
-                        scholarship.getDeadline(),
-                        scholarship.getFullDescription(),
-                        scholarship.getRequirements(),
-                        scholarship.getGpaRequirement(),
-                        scholarship.getMajors(),
-                        scholarship.getEnrollmentLevel(),
-                        scholarship.getGeographicRestrictions(),
-                        scholarship.getSponsorUrl(),
-                        scholarship.getApplyUrl()
+                        scholarship
                 );
 
         detailsView.show();
@@ -919,6 +911,11 @@ public class ScholarshipExploreView {
         );
 
         return group;
+    }
+
+    private String getCategoryText(Scholarship scholarship) {
+        return classificationService.classify(scholarship).stream().map(category ->
+                        category.name().replace("_", " ")).reduce((a, b) -> a + ", " + b).orElse("Uncategorized");
     }
 
     public BorderPane getView() {
