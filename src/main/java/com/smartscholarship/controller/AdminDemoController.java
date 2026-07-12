@@ -2,16 +2,25 @@ package com.smartscholarship.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.smartscholarship.observer.ApplicationStatusNotifier;
+import com.smartscholarship.observer.StudentNotificationObserver;
 
 public class AdminDemoController {
 
     private final List<AdminApplication> pendingApplications;
     private final List<AdminApplication> applicationHistory;
+
     private Runnable refreshAction;
+    private final ApplicationStatusNotifier notifier;
+    private final StudentNotificationObserver notificationObserver;
 
     public AdminDemoController() {
         pendingApplications = new ArrayList<>();
         applicationHistory = new ArrayList<>();
+        notifier = new ApplicationStatusNotifier();
+        notificationObserver = new StudentNotificationObserver();
+
+        notifier.addObserver(notificationObserver);
 
         createDemoData();
     }
@@ -130,6 +139,13 @@ public class AdminDemoController {
         selectedApplication.setTime("Just now");
         applicationHistory.add(0, selectedApplication);
 
+        notifier.notifyObservers(
+                "Application "
+                        + applicationId
+                        + " has been "
+                        + newStatus
+        );
+
         refreshView();
     }
 
@@ -137,6 +153,9 @@ public class AdminDemoController {
         if (refreshAction != null) {
             refreshAction.run();
         }
+    }
+    public StudentNotificationObserver getNotificationObserver() {
+        return notificationObserver;
     }
 
     public static class AdminApplication {
