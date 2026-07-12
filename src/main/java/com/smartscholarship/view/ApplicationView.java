@@ -1,6 +1,10 @@
 package com.smartscholarship.view;
 
 import com.smartscholarship.controller.ApplicationController;
+import com.smartscholarship.model.ApplicationStatus;
+import com.smartscholarship.model.ScholarshipApplication;
+import com.smartscholarship.repository.ApplicationRepository;
+import com.smartscholarship.service.ClassificationService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -41,9 +45,11 @@ public class ApplicationView {
     private final ApplicationController controller;
     private final TextField searchField;
     private final VBox applicationRows;
-    private final List<ApplicationDemo> applications;
+    private final List<ScholarshipApplication> applications;
+    private final ClassificationService classificationService = new ClassificationService();
 
     private String selectedStatus = "All";
+
 
     private static final String PURPLE = "#6237C7";
     private static final String DARK_PURPLE = "#351577";
@@ -57,37 +63,10 @@ public class ApplicationView {
         this.root = new BorderPane();
         this.searchField = new TextField();
         this.applicationRows = new VBox();
-        this.applications = new ArrayList<>();
+        this.applications = ApplicationRepository.getApplications();
 
-        createDemoApplications();
         controller.setRefreshAction(this::refreshApplications);
         buildUI();
-    }
-
-    private void createDemoApplications() {
-        applications.add(new ApplicationDemo(
-                "xxx Scholarship Name",
-                "Excellence",
-                "Pending"
-        ));
-
-        applications.add(new ApplicationDemo(
-                "xxx Scholarship Name",
-                "Financial Aid",
-                "Rejected"
-        ));
-
-        applications.add(new ApplicationDemo(
-                "xxx Scholarship Name",
-                "Merit",
-                "Approved"
-        ));
-
-        applications.add(new ApplicationDemo(
-                "xxx Scholarship Name",
-                "Merit",
-                "Approved"
-        ));
     }
 
     private void buildUI() {
@@ -266,7 +245,8 @@ public class ApplicationView {
         ToggleGroup group = new ToggleGroup();
 
         ToggleButton all = createFilterButton("All", group);
-        ToggleButton pending = createFilterButton("Pending", group);
+        ToggleButton applied = createFilterButton("Applied", group);
+        ToggleButton underReview = createFilterButton("Under Review", group);
         ToggleButton approved = createFilterButton("Approved", group);
         ToggleButton rejected = createFilterButton("Rejected", group);
 
@@ -274,7 +254,8 @@ public class ApplicationView {
 
         buttons.getChildren().addAll(
                 all,
-                pending,
+                applied,
+                underReview,
                 approved,
                 rejected
         );
@@ -445,22 +426,17 @@ public class ApplicationView {
                 .trim()
                 .toLowerCase();
 
-        List<ApplicationDemo> filtered = applications.stream()
+        List<ScholarshipApplication> filtered = applications.stream()
                 .filter(application ->
                         selectedStatus.equals("All")
-                                || application.status.equals(selectedStatus)
+                                || getStatusText(application.getStatus())
+                                .equalsIgnoreCase(selectedStatus)
                 )
                 .filter(application ->
                         keyword.isEmpty()
-                                || application.scholarship
-                                .toLowerCase()
-                                .contains(keyword)
-                                || application.category
-                                .toLowerCase()
-                                .contains(keyword)
-                                || application.status
-                                .toLowerCase()
-                                .contains(keyword)
+                                || application.getScholarship().getTitle().toLowerCase().contains(keyword)
+                                || getCategoryText(application).toLowerCase().contains(keyword)
+                                || getStatusText(application.getStatus()).toLowerCase().contains(keyword)
                 )
                 .toList();
 
@@ -490,7 +466,7 @@ public class ApplicationView {
     }
 
     private GridPane createApplicationRow(
-            ApplicationDemo application,
+            ScholarshipApplication application,
             boolean lastRow
     ) {
         GridPane row = createTableGrid();
@@ -510,7 +486,7 @@ public class ApplicationView {
         );
 
         StackPane scholarshipCell = createBodyCell(
-                application.scholarship,
+                application.getScholarship().getTitle(),
                 Pos.CENTER_LEFT,
                 false
         );
@@ -518,13 +494,13 @@ public class ApplicationView {
         scholarshipCell.setPadding(new Insets(0, 0, 0, 24));
 
         StackPane categoryCell = createBodyCell(
-                application.category,
+                getCategoryText(application),
                 Pos.CENTER,
                 true
         );
 
         StackPane statusCell = new StackPane(
-                createStatusLabel(application.status)
+                createStatusLabel(getStatusText(application.getStatus()))
         );
 
         statusCell.setAlignment(Pos.CENTER);
@@ -605,9 +581,11 @@ public class ApplicationView {
         String backgroundColor;
 
         switch (status) {
+            case "Applied" -> backgroundColor = "#F7C94D";
+            case "Under Review" -> backgroundColor = "#4DA3FF";
             case "Approved" -> backgroundColor = "#63DDB0";
             case "Rejected" -> backgroundColor = "#FF6878";
-            default -> backgroundColor = "#F7C94D";
+            default -> backgroundColor = "#999999";
         }
 
         label.setStyle(
@@ -838,21 +816,26 @@ public class ApplicationView {
         return group;
     }
 
-    private static class ApplicationDemo {
+    private String getCategoryText(ScholarshipApplication application) {
+        return classificationService.classify(application.getScholarship())
+                .stream()
+                .map(category -> switch (category) {
+                    case MERIT -> "Merit";
+                    case FINANCIAL_AID -> "Financial Aid";
+                    case EXCELLENCE -> "Excellence";
+                    case UNCATEGORIZED -> "Uncategorized";
+                })
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("Uncategorized");
+    }
 
-        private final String scholarship;
-        private final String category;
-        private final String status;
-
-        private ApplicationDemo(
-                String scholarship,
-                String category,
-                String status
-        ) {
-            this.scholarship = scholarship;
-            this.category = category;
-            this.status = status;
-        }
+    private String getStatusText(ApplicationStatus status) {
+        return switch (status) {
+            case APPLIED -> "Applied";
+            case UNDER_REVIEW -> "Under Review";
+            case APPROVED -> "Approved";
+            case REJECTED -> "Rejected";
+        };
     }
 
     public BorderPane getView() {

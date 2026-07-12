@@ -4,16 +4,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
+import com.smartscholarship.model.Student;
+import com.smartscholarship.util.CurrentStudent;
 
 public class ProfileController {
 
-    public void handleSubmit(
+    public boolean handleSubmit(
             TextField nameField,
             Spinner<Integer> ageSpinner,
             TextField gmailField,
             TextField mobileField,
-            TextField schoolField,
-            TextField fieldOfStudyField,
             TextField gpaField,
             TextField incomeField,
             CheckBox privacyCheckBox,
@@ -23,16 +23,12 @@ public class ProfileController {
         String name = nameField.getText().trim();
         String gmail = gmailField.getText().trim();
         String mobile = mobileField.getText().trim();
-        String school = schoolField.getText().trim();
-        String fieldOfStudy = fieldOfStudyField.getText().trim();
         String gpa = gpaField.getText().trim();
         String income = incomeField.getText().trim();
 
         if (name.isEmpty()
                 || gmail.isEmpty()
                 || mobile.isEmpty()
-                || school.isEmpty()
-                || fieldOfStudy.isEmpty()
                 || gpa.isEmpty()
                 || income.isEmpty()) {
 
@@ -41,7 +37,7 @@ public class ProfileController {
                     "Incomplete Profile",
                     "Please complete all profile fields."
             );
-            return;
+            return false;
         }
 
         if (!privacyCheckBox.isSelected()) {
@@ -50,7 +46,7 @@ public class ProfileController {
                     "Privacy Policy Required",
                     "Please agree to the Privacy Policy before submitting."
             );
-            return;
+            return false;
         }
 
         try {
@@ -62,7 +58,7 @@ public class ProfileController {
                         "Invalid GPA",
                         "Please enter a GPA between 0.0 and 4.0."
                 );
-                return;
+                return false;
             }
 
         } catch (NumberFormatException e) {
@@ -71,7 +67,7 @@ public class ProfileController {
                     "Invalid GPA",
                     "Please enter a valid numeric GPA."
             );
-            return;
+            return false;
         }
 
         try {
@@ -83,7 +79,7 @@ public class ProfileController {
                         "Invalid Income",
                         "Household income cannot be negative."
                 );
-                return;
+                return false;
             }
 
         } catch (NumberFormatException e) {
@@ -92,28 +88,29 @@ public class ProfileController {
                     "Invalid Income",
                     "Please enter a valid annual household income."
             );
-            return;
+            return false;
         }
 
         int age = ageSpinner.getValue();
         boolean notificationsEnabled = notificationCheckBox.isSelected();
 
-        System.out.println("Profile submitted:");
-        System.out.println("Name: " + name);
-        System.out.println("Age: " + age);
-        System.out.println("Gmail: " + gmail);
-        System.out.println("Mobile: " + mobile);
-        System.out.println("School: " + school);
-        System.out.println("Field of Study: " + fieldOfStudy);
-        System.out.println("GPA: " + gpa);
-        System.out.println("Annual Household Income: " + income);
-        System.out.println("Notifications Enabled: " + notificationsEnabled);
+        Student student = new Student();
+        student.setStudentID("S001");
+        student.setName(name);
+        student.setGPA(Double.parseDouble(gpa));
+        student.setHouseholdIncome(Double.parseDouble(income));
+        student.setAge(age);
+        student.setGmail(gmail);
+        student.setMobile(mobile);
+        CurrentStudent.setStudent(student);
+        System.out.println("Student profile saved.");
 
         showAlert(
                 Alert.AlertType.INFORMATION,
                 "Profile Submitted",
                 "Your profile has been submitted successfully."
         );
+        return true;
     }
 
     private void showAlert(

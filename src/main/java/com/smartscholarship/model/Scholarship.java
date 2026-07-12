@@ -17,10 +17,7 @@ public class Scholarship {
     private String majors;
     private String enrollmentLevel;
     private String geographicRestrictions;
-    private String enrollmentDetail;
-    private Integer awardAmount;
     private boolean renewable;
-    private boolean repayRequired;
 
     //This is the default constructor
     public Scholarship() {

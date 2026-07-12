@@ -1,7 +1,7 @@
 package com.smartscholarship.view;
 
 import com.smartscholarship.controller.AdminDemoController;
-import com.smartscholarship.controller.AdminDemoController.AdminApplication;
+import com.smartscholarship.model.ScholarshipApplication;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -307,12 +307,12 @@ public class AdminDemoView {
     private void refreshPendingApplications() {
         pendingContainer.getChildren().clear();
 
-        List<AdminApplication> applications =
+        List<ScholarshipApplication> applications =
                 controller.searchPendingApplications(
                         searchField.getText()
                 );
 
-        for (AdminApplication application : applications) {
+        for (ScholarshipApplication application : applications) {
             pendingContainer.getChildren().add(
                     createPendingCard(application)
             );
@@ -372,7 +372,7 @@ public class AdminDemoView {
     }
 
     private VBox createPendingCard(
-            AdminApplication application
+            ScholarshipApplication application
     ) {
         VBox card = new VBox(12);
 
@@ -400,7 +400,7 @@ public class AdminDemoView {
         );
 
         Label userLabel = new Label(
-                application.getUserName()
+                application.getApplicant().getName()
         );
 
         userLabel.setTextFill(TEXT_PURPLE);
@@ -417,7 +417,7 @@ public class AdminDemoView {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Label timeLabel = new Label(
-                application.getTime()
+                "Just now"
         );
 
         timeLabel.setPadding(
@@ -456,7 +456,7 @@ public class AdminDemoView {
     }
 
     private GridPane createApplicationDetails(
-            AdminApplication application
+            ScholarshipApplication application
     ) {
         GridPane details = new GridPane();
 
@@ -487,7 +487,7 @@ public class AdminDemoView {
 
         details.add(
                 createDetailValue(
-                        application.getScholarshipName()
+                        application.getScholarship().getTitle()
                 ),
                 1,
                 0
@@ -501,7 +501,7 @@ public class AdminDemoView {
 
         details.add(
                 createDetailValue(
-                        application.getApplicationId()
+                        application.getApplicationID()
                 ),
                 1,
                 1
@@ -512,20 +512,12 @@ public class AdminDemoView {
                 0,
                 2
         );
-
-        details.add(
-                createStatusBadge(
-                        application.getStatus()
-                ),
-                1,
-                2
-        );
-
+        details.add(createStatusBadge(application.getStatus().name()), 1, 2);
         return details;
     }
 
     private HBox createActionButtons(
-            AdminApplication application
+            ScholarshipApplication application
     ) {
         HBox actions = new HBox(12);
 
@@ -575,7 +567,7 @@ public class AdminDemoView {
 
         approveButton.setOnAction(event ->
                 controller.approveApplication(
-                        application.getApplicationId()
+                        application.getApplicationID()
                 )
         );
 
@@ -597,7 +589,7 @@ public class AdminDemoView {
 
         declineButton.setOnAction(event ->
                 controller.declineApplication(
-                        application.getApplicationId()
+                        application.getApplicationID()
                 )
         );
 
@@ -662,7 +654,7 @@ public class AdminDemoView {
     private void refreshHistory() {
         historyContainer.getChildren().clear();
 
-        List<AdminApplication> history =
+        List<ScholarshipApplication> history =
                 controller.getApplicationHistory();
 
         int limit = showAllHistory
@@ -679,7 +671,7 @@ public class AdminDemoView {
     }
 
     private HBox createHistoryRow(
-            AdminApplication application
+            ScholarshipApplication application
     ) {
         HBox row = new HBox();
 
@@ -720,7 +712,7 @@ public class AdminDemoView {
         userInfo.setMaxWidth(145);
 
         Label userLabel = new Label(
-                application.getUserName()
+                application.getApplicant().getName()
         );
 
         userLabel.setTextFill(TEXT_PURPLE);
@@ -738,7 +730,7 @@ public class AdminDemoView {
         userLabel.setMaxWidth(145);
 
         Label scholarshipLabel = new Label(
-                application.getScholarshipName()
+                application.getScholarship().getTitle()
         );
 
         scholarshipLabel.setTextFill(
@@ -773,7 +765,7 @@ public class AdminDemoView {
         statusColumn.setMaxWidth(90);
 
         Label statusBadge = createStatusBadge(
-                application.getStatus()
+                application.getStatus().name()
         );
 
         statusBadge.setMinWidth(74);
@@ -889,7 +881,7 @@ public class AdminDemoView {
     }
 
     private void showUserProfile(
-            AdminApplication application
+            ScholarshipApplication application
     ) {
         Alert alert = new Alert(
                 Alert.AlertType.INFORMATION
@@ -898,14 +890,14 @@ public class AdminDemoView {
         alert.setTitle("User Profile");
 
         alert.setHeaderText(
-                application.getUserName()
+                application.getApplicant().getName()
         );
 
         alert.setContentText(
                 "Application ID: "
-                        + application.getApplicationId()
+                        + application.getApplicationID()
                         + "\nScholarship: "
-                        + application.getScholarshipName()
+                        + application.getScholarship().getTitle()
                         + "\nStatus: "
                         + application.getStatus()
         );
@@ -914,7 +906,7 @@ public class AdminDemoView {
     }
 
     private void showApplicationReview(
-            AdminApplication application
+            ScholarshipApplication application
     ) {
         Alert alert = new Alert(
                 Alert.AlertType.INFORMATION
@@ -925,18 +917,18 @@ public class AdminDemoView {
         );
 
         alert.setHeaderText(
-                application.getApplicationId()
+                application.getApplicationID()
         );
 
         alert.setContentText(
                 "User: "
-                        + application.getUserName()
+                        + application.getApplicant().getName()
                         + "\nScholarship: "
-                        + application.getScholarshipName()
+                        + application.getScholarship().getTitle()
                         + "\nStatus: "
                         + application.getStatus()
                         + "\nUpdated: "
-                        + application.getTime()
+                        + "Just Now"
         );
 
         alert.showAndWait();

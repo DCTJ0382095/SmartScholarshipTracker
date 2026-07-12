@@ -1,6 +1,7 @@
 package com.smartscholarship.view;
 
 import com.smartscholarship.controller.ScholarshipDetailsController;
+import com.smartscholarship.model.Scholarship;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -22,20 +23,7 @@ public class ScholarshipDetailsView {
 
     private final Stage stage;
     private final ScholarshipDetailsController controller;
-
-    private final String name;
-    private final String organization;
-    private final String category;
-    private final String amount;
-    private final String deadline;
-    private final String description;
-    private final String requirements;
-    private final String gpaRequirement;
-    private final String majors;
-    private final String enrollmentLevel;
-    private final String geographicRestrictions;
-    private final String contactUrl;
-    private final String applyUrl;
+    private final Scholarship scholarship;
 
     private static final String PURPLE = "#6237BE";
     private static final String DARK_PURPLE = "#4A2A91";
@@ -44,35 +32,11 @@ public class ScholarshipDetailsView {
 
     public ScholarshipDetailsView(
             Window owner,
-            String name,
-            String organization,
-            String category,
-            String amount,
-            String deadline,
-            String description,
-            String requirements,
-            String gpaRequirement,
-            String majors,
-            String enrollmentLevel,
-            String geographicRestrictions,
-            String contactUrl,
-            String applyUrl
+            Scholarship scholarship
     ) {
         this.stage = new Stage();
         this.controller = new ScholarshipDetailsController();
-        this.name = name;
-        this.organization = organization;
-        this.category = category;
-        this.amount = amount;
-        this.deadline = deadline;
-        this.description = description;
-        this.requirements = requirements;
-        this.gpaRequirement = gpaRequirement;
-        this.majors = majors;
-        this.enrollmentLevel = enrollmentLevel;
-        this.geographicRestrictions = geographicRestrictions;
-        this.contactUrl = contactUrl;
-        this.applyUrl = applyUrl;
+        this.scholarship = scholarship;
 
         buildStage(owner);
     }
@@ -122,7 +86,7 @@ public class ScholarshipDetailsView {
 
         VBox descriptionSection = createTextSection(
                 "Description",
-                description
+                scholarship.getDescription()
         );
 
         VBox eligibilitySection = createEligibilitySection();
@@ -149,7 +113,7 @@ public class ScholarshipDetailsView {
 
         Label title = new Label(
                 valueOrDefault(
-                        name,
+                        scholarship.getTitle(),
                         "Scholarship Information"
                 )
         );
@@ -171,7 +135,7 @@ public class ScholarshipDetailsView {
 
         Label organisationLabel = new Label(
                 "by " + valueOrDefault(
-                        organization,
+                        scholarship.getSponsorName(),
                         "Organisation unavailable"
                 )
         );
@@ -249,7 +213,7 @@ public class ScholarshipDetailsView {
         VBox awardBox = createSummaryItem(
                 "Award Amount",
                 valueOrDefault(
-                        amount,
+                        scholarship.getAward(),
                         "Not specified"
                 )
         );
@@ -259,7 +223,7 @@ public class ScholarshipDetailsView {
         VBox deadlineBox = createSummaryItem(
                 "Deadline",
                 valueOrDefault(
-                        deadline,
+                        scholarship.getDeadline(),
                         "Not specified"
                 )
         );
@@ -269,7 +233,7 @@ public class ScholarshipDetailsView {
         VBox categoryBox = createSummaryItem(
                 "Category",
                 valueOrDefault(
-                        category,
+                        scholarship.getAwardType(),
                         "Not specified"
                 )
         );
@@ -421,23 +385,23 @@ public class ScholarshipDetailsView {
         requirementBox.getChildren().addAll(
                 createRequirementRow(
                         "Requirements",
-                        requirements
+                        scholarship.getRequirements()
                 ),
                 createRequirementRow(
                         "GPA Requirement",
-                        gpaRequirement
+                        scholarship.getGpaRequirement()
                 ),
                 createRequirementRow(
                         "Majors",
-                        majors
+                        scholarship.getMajors()
                 ),
                 createRequirementRow(
                         "Enrollment Level",
-                        enrollmentLevel
+                        scholarship.getEnrollmentLevel()
                 ),
                 createRequirementRow(
                         "Geographic Restrictions",
-                        geographicRestrictions
+                        scholarship.getGeographicRestrictions()
                 )
         );
 
@@ -538,7 +502,7 @@ public class ScholarshipDetailsView {
         Label organisationLabel = new Label(
                 "Organisation: " +
                         valueOrDefault(
-                                organization,
+                                scholarship.getSponsorName(),
                                 "Not specified"
                         )
         );
@@ -554,7 +518,7 @@ public class ScholarshipDetailsView {
         Label contactLabel = new Label(
                 "Contact: " +
                         valueOrDefault(
-                                contactUrl,
+                                scholarship.getSponsorUrl(),
                                 "Not available"
                         )
         );
@@ -572,7 +536,7 @@ public class ScholarshipDetailsView {
         Label applicationLabel = new Label(
                 "Application: " +
                         valueOrDefault(
-                                applyUrl,
+                                scholarship.getApplyUrl(),
                                 "Not available"
                         )
         );
@@ -627,7 +591,7 @@ public class ScholarshipDetailsView {
         contactButton.setOnAction(
                 event ->
                         controller.handleContact(
-                                contactUrl
+                                scholarship.getSponsorUrl()
                         )
         );
 
@@ -650,7 +614,7 @@ public class ScholarshipDetailsView {
         applyButton.setOnAction(
                 event ->
                         controller.handleApply(
-                                applyUrl
+                                scholarship
                         )
         );
 

@@ -1,6 +1,12 @@
 package com.smartscholarship.view;
 
 import com.smartscholarship.controller.ScholarshipExploreController;
+import com.smartscholarship.model.Scholarship;
+import com.smartscholarship.service.APIService;
+import com.smartscholarship.service.ClassificationService;
+import com.smartscholarship.service.EligibilityService;
+import com.smartscholarship.util.CurrentStudent;
+import com.smartscholarship.model.Student;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -53,7 +59,10 @@ public class ScholarshipExploreView {
     private static final Color ELIGIBLE_GREEN = Color.web("#39C98A");
     private static final Color NOT_ELIGIBLE_GREY = Color.web("#999999");
 
-    private final List<ScholarshipDemo> scholarships = new ArrayList<>();
+    private final List<Scholarship> scholarships = new ArrayList<>();
+    private final APIService apiService = new APIService();
+    private final EligibilityService eligibilityService = new EligibilityService();
+    private final ClassificationService classificationService;
 
     public ScholarshipExploreView(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -61,174 +70,11 @@ public class ScholarshipExploreView {
         this.root = new BorderPane();
         this.searchField = new TextField();
         this.scholarshipGrid = new GridPane();
-
-        createDemoScholarships();
+        APIService apiService = new APIService();
+        classificationService = new ClassificationService();
+        scholarships.addAll(apiService.fetchScholarships());
         controller.setRefreshAction(this::refreshScholarships);
         buildUI();
-    }
-
-    private void createDemoScholarships() {
-        scholarships.add(new ScholarshipDemo(
-                "Future Leaders Scholarship",
-                "Merit",
-                "$5,000",
-                "Supports high-achieving students pursuing undergraduate studies.",
-                "Future Education Foundation",
-                true,
-                "31 December 2026",
-                "Provides support to high-achieving students who demonstrate leadership potential and strong academic performance.",
-                "Applicants must demonstrate academic achievement, leadership potential and active participation in school or community activities.",
-                "3.50 or above",
-                "All majors",
-                "Undergraduate",
-                "Open to eligible international and domestic students",
-                "https://example.com/contact/future-leaders",
-                "https://example.com/apply/future-leaders"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Student Support Scholarship",
-                "Financial Aid",
-                "$3,000",
-                "Provides financial support for eligible students in need.",
-                "Global Student Foundation",
-                true,
-                "15 November 2026",
-                "Supports students who require financial assistance to continue their higher education.",
-                "Applicants must demonstrate financial need and satisfactory academic progress.",
-                "2.50 or above",
-                "All majors",
-                "Undergraduate",
-                "Open to eligible students",
-                "https://example.com/contact/student-support",
-                "https://example.com/apply/student-support"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Academic Excellence Award",
-                "Excellence",
-                "$8,000",
-                "Recognises students with outstanding academic achievement.",
-                "Education Excellence Group",
-                true,
-                "30 October 2026",
-                "Recognises outstanding students with excellent academic performance and a strong commitment to education.",
-                "Applicants must provide evidence of outstanding academic achievement.",
-                "3.80 or above",
-                "All majors",
-                "Undergraduate and Postgraduate",
-                "Open internationally",
-                "https://example.com/contact/academic-excellence",
-                "https://example.com/apply/academic-excellence"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Rising Scholars Award",
-                "Merit",
-                "$4,500",
-                "Supports motivated students with strong academic potential.",
-                "Rising Future Organisation",
-                true,
-                "20 December 2026",
-                "Supports motivated students who demonstrate strong academic potential and commitment to future development.",
-                "Applicants must demonstrate academic potential and motivation.",
-                "3.20 or above",
-                "All majors",
-                "Undergraduate",
-                "Selected regions",
-                "https://example.com/contact/rising-scholars",
-                "https://example.com/apply/rising-scholars"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Access to Education Grant",
-                "Financial Aid",
-                "$6,000",
-                "Assists students who require additional financial support.",
-                "Student Access Network",
-                false,
-                "1 December 2026",
-                "Provides financial assistance to students facing barriers to accessing higher education.",
-                "Applicants must demonstrate significant financial need.",
-                "2.50 or above",
-                "All majors",
-                "Undergraduate",
-                "Selected countries",
-                "https://example.com/contact/access-education",
-                "https://example.com/apply/access-education"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Global Excellence Scholarship",
-                "Excellence",
-                "$10,000",
-                "Supports exceptional students pursuing higher education.",
-                "Global Education Trust",
-                true,
-                "10 January 2027",
-                "Supports exceptional students with excellent academic records and strong future potential.",
-                "Applicants must demonstrate exceptional academic performance.",
-                "3.80 or above",
-                "All majors",
-                "Undergraduate and Postgraduate",
-                "Open internationally",
-                "https://example.com/contact/global-excellence",
-                "https://example.com/apply/global-excellence"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Future Innovators Award",
-                "Merit",
-                "$7,000",
-                "Supports students demonstrating academic and innovative potential.",
-                "Innovation Foundation",
-                true,
-                "5 December 2026",
-                "Supports students who demonstrate innovation, creativity and strong academic potential.",
-                "Applicants must demonstrate innovative achievements or project experience.",
-                "3.30 or above",
-                "Technology, Engineering and related majors",
-                "Undergraduate",
-                "Open to eligible students",
-                "https://example.com/contact/future-innovators",
-                "https://example.com/apply/future-innovators"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Community Support Grant",
-                "Financial Aid",
-                "$2,500",
-                "Provides educational support to students with financial need.",
-                "Community Education Fund",
-                false,
-                "25 November 2026",
-                "Provides support to students experiencing financial barriers while pursuing education.",
-                "Applicants must demonstrate financial need.",
-                "2.30 or above",
-                "All majors",
-                "Undergraduate",
-                "Local and selected regional applicants",
-                "https://example.com/contact/community-support",
-                "https://example.com/apply/community-support"
-        ));
-
-        scholarships.add(new ScholarshipDemo(
-                "Outstanding Student Award",
-                "Excellence",
-                "$9,000",
-                "Recognises exceptional performance and academic excellence.",
-                "Academic Achievement Council",
-                false,
-                "18 December 2026",
-                "Recognises students with exceptional academic performance and significant achievements.",
-                "Applicants must demonstrate exceptional academic and extracurricular achievements.",
-                "3.90 or above",
-                "All majors",
-                "Undergraduate and Postgraduate",
-                "Open internationally",
-                "https://example.com/contact/outstanding-student",
-                "https://example.com/apply/outstanding-student"
-        ));
     }
 
     private void buildUI() {
@@ -540,30 +386,25 @@ public class ScholarshipExploreView {
                         .trim()
                         .toLowerCase();
 
-        List<ScholarshipDemo> filtered =
+        List<Scholarship> filtered =
                 scholarships.stream()
-                        .filter(scholarship ->
-                                selectedCategory.equals("All")
-                                        || scholarship.category.equals(
-                                        selectedCategory
-                                )
-                        )
+                        .filter(scholarship -> {
+                            if (selectedCategory.equals("All")) {
+                                return true;
+                            }
+                            return getCategoryText(scholarship)
+                                    .toLowerCase()
+                                    .contains(selectedCategory.toLowerCase());
+                        })
                         .filter(scholarship ->
                                 keyword.isEmpty()
-                                        || scholarship.name
+                                        || scholarship.getTitle()
                                         .toLowerCase()
                                         .contains(keyword)
-                                        || scholarship.organization
+                                        || scholarship.getSponsorName()
                                         .toLowerCase()
                                         .contains(keyword)
-                        )
-                        .sorted(
-                                Comparator.comparing(
-                                        (ScholarshipDemo scholarship) ->
-                                                scholarship.eligible
-                                ).reversed()
-                        )
-                        .toList();
+                        ).toList();
 
         int limit =
                 showAll
@@ -606,7 +447,7 @@ public class ScholarshipExploreView {
     }
 
     private VBox createScholarshipCard(
-            ScholarshipDemo scholarship
+            Scholarship scholarship
     ) {
         VBox card = new VBox();
 
@@ -651,7 +492,7 @@ public class ScholarshipExploreView {
         );
 
         Label amount =
-                new Label(scholarship.amount);
+                new Label(scholarship.getAward());
 
         amount.setTextFill(PURPLE);
 
@@ -679,7 +520,7 @@ public class ScholarshipExploreView {
         body.setMaxHeight(222);
 
         Label name =
-                new Label(scholarship.name);
+                new Label(scholarship.getTitle());
 
         name.setTextFill(PURPLE);
 
@@ -698,7 +539,7 @@ public class ScholarshipExploreView {
         name.setMaxWidth(Double.MAX_VALUE);
 
         Label description =
-                new Label(scholarship.shortDescription);
+                new Label(scholarship.getDescription());
 
         description.setTextFill(
                 Color.web("#777777")
@@ -729,7 +570,7 @@ public class ScholarshipExploreView {
 
         Label by =
                 new Label(
-                        "by " + scholarship.organization
+                        "by " + scholarship.getSponsorName()
                 );
 
         by.setTextFill(
@@ -751,35 +592,29 @@ public class ScholarshipExploreView {
                 organisationIcon
         );
 
-        Label eligibility;
+        Student student = CurrentStudent.getStudent();
 
-        if (scholarship.eligible) {
-            eligibility = new Label("✓ Eligible");
+        boolean eligible = false;
 
-            eligibility.setTextFill(
-                    ELIGIBLE_GREEN
-            );
-
-            eligibility.setStyle(
-                    "-fx-text-fill: #39C98A;" +
-                            "-fx-font-size: 12px;"
-            );
-        } else {
-            eligibility = new Label("Not Eligible");
-
-            eligibility.setTextFill(
-                    NOT_ELIGIBLE_GREY
-            );
-
-            eligibility.setStyle(
-                    "-fx-text-fill: #999999;" +
-                            "-fx-font-size: 12px;"
-            );
+        if (student != null) {
+            eligible = eligibilityService.isEligible(student, scholarship);
         }
 
-        eligibility.setFont(
-                Font.font("Arial", 12)
+        Label eligibility;
+
+        if (eligible) {
+            eligibility = new Label("✓ Eligible");
+            eligibility.setTextFill(ELIGIBLE_GREEN);
+        } else {
+            eligibility = new Label("Not Eligible");
+            eligibility.setTextFill(NOT_ELIGIBLE_GREY);
+        }
+
+        eligibility.setStyle(
+                "-fx-font-size: 12px;"
         );
+
+        eligibility.setFont(Font.font("Arial", 12));
 
         eligibility.setAlignment(Pos.CENTER);
         eligibility.setMaxWidth(Double.MAX_VALUE);
@@ -808,24 +643,12 @@ public class ScholarshipExploreView {
     }
 
     private void openScholarshipDetails(
-            ScholarshipDemo scholarship
+            Scholarship scholarship
     ) {
         ScholarshipDetailsView detailsView =
                 new ScholarshipDetailsView(
                         root.getScene().getWindow(),
-                        scholarship.name,
-                        scholarship.organization,
-                        scholarship.category,
-                        scholarship.amount,
-                        scholarship.deadline,
-                        scholarship.fullDescription,
-                        scholarship.requirements,
-                        scholarship.gpaRequirement,
-                        scholarship.majors,
-                        scholarship.enrollmentLevel,
-                        scholarship.geographicRestrictions,
-                        scholarship.contactUrl,
-                        scholarship.applyUrl
+                        scholarship
                 );
 
         detailsView.show();
@@ -1090,57 +913,9 @@ public class ScholarshipExploreView {
         return group;
     }
 
-    private static class ScholarshipDemo {
-
-        private final String name;
-        private final String category;
-        private final String amount;
-        private final String shortDescription;
-        private final String organization;
-        private final boolean eligible;
-        private final String deadline;
-        private final String fullDescription;
-        private final String requirements;
-        private final String gpaRequirement;
-        private final String majors;
-        private final String enrollmentLevel;
-        private final String geographicRestrictions;
-        private final String contactUrl;
-        private final String applyUrl;
-
-        private ScholarshipDemo(
-                String name,
-                String category,
-                String amount,
-                String shortDescription,
-                String organization,
-                boolean eligible,
-                String deadline,
-                String fullDescription,
-                String requirements,
-                String gpaRequirement,
-                String majors,
-                String enrollmentLevel,
-                String geographicRestrictions,
-                String contactUrl,
-                String applyUrl
-        ) {
-            this.name = name;
-            this.category = category;
-            this.amount = amount;
-            this.shortDescription = shortDescription;
-            this.organization = organization;
-            this.eligible = eligible;
-            this.deadline = deadline;
-            this.fullDescription = fullDescription;
-            this.requirements = requirements;
-            this.gpaRequirement = gpaRequirement;
-            this.majors = majors;
-            this.enrollmentLevel = enrollmentLevel;
-            this.geographicRestrictions = geographicRestrictions;
-            this.contactUrl = contactUrl;
-            this.applyUrl = applyUrl;
-        }
+    private String getCategoryText(Scholarship scholarship) {
+        return classificationService.classify(scholarship).stream().map(category ->
+                        category.name().replace("_", " ")).reduce((a, b) -> a + ", " + b).orElse("Uncategorized");
     }
 
     public BorderPane getView() {
