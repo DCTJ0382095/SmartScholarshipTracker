@@ -1,6 +1,8 @@
 package com.smartscholarship.view;
 
 import com.smartscholarship.controller.NotificationController;
+import com.smartscholarship.observer.ObserverManager;
+import com.smartscholarship.observer.StudentNotificationObserver;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -39,7 +41,7 @@ public class NotificationView {
     private final TextField searchField;
     private final VBox todayRows;
     private final VBox earlierRows;
-    private final List<NotificationDemo> notifications;
+    private final StudentNotificationObserver notificationObserver;
 
     private boolean showAllEarlier = false;
 
@@ -56,56 +58,11 @@ public class NotificationView {
         this.searchField = new TextField();
         this.todayRows = new VBox(0);
         this.earlierRows = new VBox(0);
-        this.notifications = new ArrayList<>();
+        this.notificationObserver = ObserverManager.getObserver();
 
-        createDemoNotifications();
         controller.setRefreshAction(this::refreshNotifications);
         buildUI();
         refreshNotifications();
-    }
-
-    private void createDemoNotifications() {
-        notifications.add(new NotificationDemo(
-                "Application Approved ✓",
-                "Congratulations! Your application for the xxx Scholarship...",
-                "10 min ago",
-                "Today"
-        ));
-
-        notifications.add(new NotificationDemo(
-                "Application Submitted",
-                "We confirmed that your application has been submitted...",
-                "3 hr ago",
-                "Today"
-        ));
-
-        notifications.add(new NotificationDemo(
-                "Application Rejected",
-                "Unfortunately, your application for the xxx Scholarship...",
-                "mm/dd/yy",
-                "Earlier"
-        ));
-
-        notifications.add(new NotificationDemo(
-                "Application Submitted",
-                "We confirmed that your application has been submitted...",
-                "mm/dd/yy",
-                "Earlier"
-        ));
-
-        notifications.add(new NotificationDemo(
-                "Application Approved ✓",
-                "Congratulations! Your application status has been updated...",
-                "mm/dd/yy",
-                "Earlier"
-        ));
-
-        notifications.add(new NotificationDemo(
-                "Application Submitted",
-                "Your scholarship application has been received successfully...",
-                "mm/dd/yy",
-                "Earlier"
-        ));
     }
 
     private void buildUI() {
@@ -397,6 +354,16 @@ public class NotificationView {
                 .trim()
                 .toLowerCase();
 
+        List<NotificationDemo> notifications =
+                notificationObserver.getNotifications().stream()
+                        .map(message -> new NotificationDemo(
+                                "Application Update",
+                                message,
+                                "Just now",
+                                "Today"
+                        ))
+                        .toList();
+
         List<NotificationDemo> todayFiltered =
                 notifications.stream()
                         .filter(notification ->
@@ -505,9 +472,9 @@ public class NotificationView {
                 new Insets(0, 22, 0, 22)
         );
 
-        row.setMinHeight(76);
-        row.setPrefHeight(76);
-        row.setMaxHeight(76);
+        row.setMinHeight(90);
+        row.setPrefHeight(90);
+        row.setMaxHeight(Region.USE_COMPUTED_SIZE);
         row.setMaxWidth(Double.MAX_VALUE);
 
         String backgroundRadius;
@@ -537,6 +504,8 @@ public class NotificationView {
         avatar.setFill(Color.web("#D9D9D9"));
 
         VBox textBox = new VBox(3);
+        HBox.setHgrow(textBox, Priority.ALWAYS);
+        textBox.setMaxWidth(Double.MAX_VALUE);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Label title = new Label(notification.title);
@@ -556,6 +525,8 @@ public class NotificationView {
         Label message = new Label(
                 notification.message
         );
+        message.setWrapText(true);
+        message.setMaxWidth(Double.MAX_VALUE);
 
         message.setTextFill(
                 Color.web("#8E8499")
@@ -573,6 +544,9 @@ public class NotificationView {
                 title,
                 message
         );
+
+        title.setMaxWidth(Double.MAX_VALUE);
+        message.setMaxWidth(Double.MAX_VALUE);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);

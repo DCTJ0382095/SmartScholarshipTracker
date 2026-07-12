@@ -3,8 +3,10 @@ package com.smartscholarship.controller;
 import com.smartscholarship.model.ApplicationStatus;
 import com.smartscholarship.model.ScholarshipApplication;
 import com.smartscholarship.observer.ApplicationStatusNotifier;
+import com.smartscholarship.observer.Observer;
 import com.smartscholarship.observer.StudentNotificationObserver;
 import com.smartscholarship.repository.ApplicationRepository;
+import com.smartscholarship.observer.ObserverManager;
 
 import java.util.List;
 
@@ -23,10 +25,8 @@ public class AdminDemoController {
      * the student notification observer.
      */
     public AdminDemoController() {
-        notifier = new ApplicationStatusNotifier();
-        notificationObserver = new StudentNotificationObserver();
-
-        notifier.addObserver(notificationObserver);
+        notifier = ObserverManager.getNotifier();
+        notificationObserver = ObserverManager.getObserver();
     }
 
     /**
@@ -148,10 +148,11 @@ public class AdminDemoController {
         }
 
         notifier.notifyObservers(
-                "Application "
-                        + applicationId
-                        + " has been "
+                "Your application for \""
+                        + selectedApplication.getScholarship().getTitle()
+                        + "\" has been "
                         + newStatus
+                        + "."
         );
 
         refreshView();
