@@ -1,14 +1,34 @@
 package com.smartscholarship.controller;
 
+import com.smartscholarship.model.Student;
+import com.smartscholarship.util.CurrentStudent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
-import com.smartscholarship.model.Student;
-import com.smartscholarship.util.CurrentStudent;
 
+/**
+ * Handles profile submission and validation for the student profile page.
+ * The controller validates user input, creates a student profile and
+ * stores it as the current logged-in student.
+ */
 public class ProfileController {
 
+    /**
+     * Validates the submitted profile information and saves the
+     * student's profile if all inputs are valid.
+     *
+     * @param nameField student's name input field
+     * @param ageSpinner student's age selector
+     * @param gmailField student's Gmail address input field
+     * @param mobileField student's mobile number input field
+     * @param gpaField student's GPA input field
+     * @param incomeField student's household income input field
+     * @param privacyCheckBox privacy policy agreement checkbox
+     * @param notificationCheckBox notification preference checkbox
+     * @return {@code true} if the profile is successfully submitted;
+     *         otherwise {@code false}
+     */
     public boolean handleSubmit(
             TextField nameField,
             Spinner<Integer> ageSpinner,
@@ -113,6 +133,13 @@ public class ProfileController {
         return true;
     }
 
+    /**
+     * Displays an alert dialog to the user.
+     *
+     * @param type alert type
+     * @param title alert title
+     * @param message alert message
+     */
     private void showAlert(
             Alert.AlertType type,
             String title,

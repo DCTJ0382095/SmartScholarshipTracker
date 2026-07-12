@@ -1,5 +1,11 @@
 package com.smartscholarship.model;
 
+/**
+ * Represents a scholarship offered by an organisation.
+ * This class stores scholarship information such as the
+ * award details, eligibility requirements, sponsor
+ * information and application links.
+ */
 public class Scholarship {
 
     private String title;
@@ -19,11 +25,31 @@ public class Scholarship {
     private String geographicRestrictions;
     private boolean renewable;
 
-    //This is the default constructor
+    /**
+     * Creates an empty scholarship object.
+     */
     public Scholarship() {
     }
 
-    //This is the full constructor
+    /**
+     * Creates a scholarship with all required information.
+     *
+     * @param title scholarship title
+     * @param description short scholarship description
+     * @param fullDescription detailed scholarship description
+     * @param award scholarship award
+     * @param deadline application deadline
+     * @param sponsorName scholarship sponsor
+     * @param sponsorUrl sponsor website URL
+     * @param detailUrl scholarship details URL
+     * @param applyUrl scholarship application URL
+     * @param awardType scholarship award type
+     * @param requirements eligibility requirements
+     * @param gpaRequirement minimum GPA requirement
+     * @param majors eligible majors
+     * @param enrollmentLevel eligible enrolment level
+     * @param geographicRestrictions geographic restrictions
+     */
     public Scholarship(String title,
                        String description,
                        String fullDescription,
@@ -178,6 +204,11 @@ public class Scholarship {
         this.geographicRestrictions = geographicRestrictions;
     }
 
+    /**
+     * Returns a string representation of the scholarship.
+     *
+     * @return scholarship information
+     */
     @Override
     public String toString() {
         return "Scholarship{" +
