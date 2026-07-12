@@ -29,8 +29,6 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationView {
@@ -354,9 +352,9 @@ public class NotificationView {
                 .trim()
                 .toLowerCase();
 
-        List<NotificationDemo> notifications =
+        List<NotificationItem> notifications =
                 notificationObserver.getNotifications().stream()
-                        .map(message -> new NotificationDemo(
+                        .map(message -> new NotificationItem(
                                 "Application Update",
                                 message,
                                 "Just now",
@@ -364,7 +362,7 @@ public class NotificationView {
                         ))
                         .toList();
 
-        List<NotificationDemo> todayFiltered =
+        List<NotificationItem> todayFiltered =
                 notifications.stream()
                         .filter(notification ->
                                 notification.section.equals("Today")
@@ -374,7 +372,7 @@ public class NotificationView {
                         )
                         .toList();
 
-        List<NotificationDemo> earlierFiltered =
+        List<NotificationItem> earlierFiltered =
                 notifications.stream()
                         .filter(notification ->
                                 notification.section.equals("Earlier")
@@ -445,7 +443,7 @@ public class NotificationView {
     }
 
     private boolean matchesSearch(
-            NotificationDemo notification,
+            NotificationItem notification,
             String keyword
     ) {
         return keyword.isEmpty()
@@ -461,7 +459,7 @@ public class NotificationView {
     }
 
     private HBox createNotificationRow(
-            NotificationDemo notification,
+            NotificationItem notification,
             boolean firstRow,
             boolean lastRow
     ) {
@@ -965,14 +963,14 @@ public class NotificationView {
         return group;
     }
 
-    private static class NotificationDemo {
+    private static class NotificationItem {
 
         private final String title;
         private final String message;
         private final String time;
         private final String section;
 
-        private NotificationDemo(
+        private NotificationItem(
                 String title,
                 String message,
                 String time,

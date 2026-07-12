@@ -12,6 +12,9 @@ public class RequirementParser {
         }
         String[] patterns = {
                 "minimum\\s+gpa\\s*(?:of|:)?\\s*(\\d(?:\\.\\d+)?)",
+                "minimum\\s+(\\d(?:\\.\\d+)?)\\s+gpa",
+                "minimum\\s+(\\d(?:\\.\\d+)?)\\s+cgpa",
+                "at\\s+least\\s+(\\d(?:\\.\\d+)?)\\s+gpa",
                 "maintain\\s+(?:a\\s+)?gpa\\s*(?:of)?\\s*(\\d(?:\\.\\d+)?)",
                 "gpa\\s*(?:of|:)?\\s*(\\d(?:\\.\\d+)?)",
                 "(\\d(?:\\.\\d+)?)\\s+cumulative\\s+gpa",

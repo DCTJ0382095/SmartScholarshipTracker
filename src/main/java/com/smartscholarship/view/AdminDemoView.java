@@ -549,6 +549,28 @@ public class AdminDemoView {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        Button reviewButton = new Button(
+                "Review"
+        );
+
+        reviewButton.setPrefWidth(80);
+        reviewButton.setPrefHeight(32);
+
+        reviewButton.setStyle(
+                "-fx-background-color: #F9C84B;" +
+                        "-fx-background-radius: 17;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 10px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-cursor: hand;"
+        );
+
+        reviewButton.setOnAction(event ->
+                controller.reviewApplication(
+                        application.getApplicationID()
+                )
+        );
+
         Button approveButton = new Button(
                 "Approve"
         );
@@ -596,6 +618,7 @@ public class AdminDemoView {
         actions.getChildren().addAll(
                 profileButton,
                 spacer,
+                reviewButton,
                 approveButton,
                 declineButton
         );

@@ -106,6 +106,18 @@ public class AdminDemoController {
     }
 
     /**
+     * Review the specified scholarship application.
+     *
+     * @param applicationId the application ID
+     */
+    public void reviewApplication(String applicationId) {
+        updateApplicationStatus(
+                applicationId,
+                "Under Review"
+        );
+    }
+
+    /**
      * Rejects the specified scholarship application.
      *
      * @param applicationId the application ID

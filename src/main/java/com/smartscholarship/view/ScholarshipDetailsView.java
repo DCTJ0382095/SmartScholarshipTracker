@@ -1,6 +1,8 @@
 package com.smartscholarship.view;
 
 import com.smartscholarship.controller.ScholarshipDetailsController;
+import com.smartscholarship.service.ClassificationService;
+import com.smartscholarship.util.RequirementParser;
 import com.smartscholarship.model.Scholarship;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,6 +26,7 @@ public class ScholarshipDetailsView {
     private final Stage stage;
     private final ScholarshipDetailsController controller;
     private final Scholarship scholarship;
+    private final ClassificationService classificationService = new ClassificationService();
 
     private static final String PURPLE = "#6237BE";
     private static final String DARK_PURPLE = "#4A2A91";
@@ -232,10 +235,7 @@ public class ScholarshipDetailsView {
 
         VBox categoryBox = createSummaryItem(
                 "Category",
-                valueOrDefault(
-                        scholarship.getAwardType(),
-                        "Not specified"
-                )
+                getCategoryText()
         );
 
         HBox.setHgrow(
@@ -389,7 +389,7 @@ public class ScholarshipDetailsView {
                 ),
                 createRequirementRow(
                         "GPA Requirement",
-                        scholarship.getGpaRequirement()
+                        getGPARequirementText()
                 ),
                 createRequirementRow(
                         "Majors",
@@ -655,6 +655,22 @@ public class ScholarshipDetailsView {
         }
 
         return value;
+    }
+
+    private String getCategoryText() {
+        return classificationService.classify(scholarship).stream().map(category ->
+            switch (category) {
+                case MERIT -> "Merit";
+                case FINANCIAL_AID -> "Financial Aid";
+                case EXCELLENCE -> "Excellence";
+                case UNCATEGORIZED -> "Uncategorized";
+            }).reduce((a, b) -> a + ", " + b).orElse("Uncategorized");
+    }
+
+    private String getGPARequirementText() {
+        String text = scholarship.getDescription() + " " + scholarship.getRequirements() + " " + scholarship.getFullDescription();
+        Double gpa = RequirementParser.extractGPARequirement(text);
+        return gpa == null ? "Not specified" : String.valueOf(gpa);
     }
 
     public void show() {
