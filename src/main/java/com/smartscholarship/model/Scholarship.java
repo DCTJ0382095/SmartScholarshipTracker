@@ -23,13 +23,11 @@ public class Scholarship {
     private String majors;
     private String enrollmentLevel;
     private String geographicRestrictions;
-    private boolean renewable;
 
     /**
      * Creates an empty scholarship object.
      */
-    public Scholarship() {
-    }
+    public Scholarship() {}
 
     /**
      * Creates a scholarship with all required information.
@@ -65,7 +63,6 @@ public class Scholarship {
                        String majors,
                        String enrollmentLevel,
                        String geographicRestrictions) {
-
         this.title = title;
         this.description = description;
         this.fullDescription = fullDescription;
@@ -83,11 +80,9 @@ public class Scholarship {
         this.geographicRestrictions = geographicRestrictions;
     }
 
-    //This is the getters and setters
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -95,7 +90,6 @@ public class Scholarship {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -103,7 +97,6 @@ public class Scholarship {
     public String getFullDescription() {
         return fullDescription;
     }
-
     public void setFullDescription(String fullDescription) {
         this.fullDescription = fullDescription;
     }
@@ -111,7 +104,6 @@ public class Scholarship {
     public String getAward() {
         return award;
     }
-
     public void setAward(String award) {
         this.award = award;
     }
@@ -119,7 +111,6 @@ public class Scholarship {
     public String getDeadline() {
         return deadline;
     }
-
     public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
@@ -127,7 +118,6 @@ public class Scholarship {
     public String getSponsorName() {
         return sponsorName;
     }
-
     public void setSponsorName(String sponsorName) {
         this.sponsorName = sponsorName;
     }
@@ -135,7 +125,6 @@ public class Scholarship {
     public String getSponsorUrl() {
         return sponsorUrl;
     }
-
     public void setSponsorUrl(String sponsorUrl) {
         this.sponsorUrl = sponsorUrl;
     }
@@ -143,7 +132,6 @@ public class Scholarship {
     public String getDetailUrl() {
         return detailUrl;
     }
-
     public void setDetailUrl(String detailUrl) {
         this.detailUrl = detailUrl;
     }
@@ -151,7 +139,6 @@ public class Scholarship {
     public String getApplyUrl() {
         return applyUrl;
     }
-
     public void setApplyUrl(String applyUrl) {
         this.applyUrl = applyUrl;
     }
@@ -159,7 +146,6 @@ public class Scholarship {
     public String getAwardType() {
         return awardType;
     }
-
     public void setAwardType(String awardType) {
         this.awardType = awardType;
     }
@@ -167,7 +153,6 @@ public class Scholarship {
     public String getRequirements() {
         return requirements;
     }
-
     public void setRequirements(String requirements) {
         this.requirements = requirements;
     }
@@ -175,7 +160,6 @@ public class Scholarship {
     public String getGpaRequirement() {
         return gpaRequirement;
     }
-
     public void setGpaRequirement(String gpaRequirement) {
         this.gpaRequirement = gpaRequirement;
     }
@@ -183,7 +167,6 @@ public class Scholarship {
     public String getMajors() {
         return majors;
     }
-
     public void setMajors(String majors) {
         this.majors = majors;
     }
@@ -191,7 +174,6 @@ public class Scholarship {
     public String getEnrollmentLevel() {
         return enrollmentLevel;
     }
-
     public void setEnrollmentLevel(String enrollmentLevel) {
         this.enrollmentLevel = enrollmentLevel;
     }
@@ -199,10 +181,7 @@ public class Scholarship {
     public String getGeographicRestrictions() {
         return geographicRestrictions;
     }
-
-    public void setGeographicRestrictions(String geographicRestrictions) {
-        this.geographicRestrictions = geographicRestrictions;
-    }
+    public void setGeographicRestrictions(String geographicRestrictions) {this.geographicRestrictions = geographicRestrictions;}
 
     /**
      * Returns a string representation of the scholarship.
@@ -215,7 +194,6 @@ public class Scholarship {
                 "title='" + title + '\'' +
                 ", award='" + award + '\'' +
                 ", awardType='" + awardType + '\'' +
-                ", renewable=" + renewable +
                 ", deadline='" + deadline + '\'' +
                 ", enrollmentLevel='" + enrollmentLevel + '\'' +
                 ", majors='" + majors + '\'' +

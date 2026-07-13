@@ -3,11 +3,60 @@ package com.smartscholarship.service;
 import com.smartscholarship.model.Scholarship;
 import com.smartscholarship.model.ScholarshipCategory;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Classifies scholarships into one or more scholarship
+ * categories based on their title, description,
+ * and eligibility requirements.
+ */
 public class ClassificationService {
+
+    /**
+     * Classifies a scholarship into one or more scholarship categories
+     * based on its title, description and eligibility requirements.
+     *
+     * @param scholarship the scholarship to classify
+     * @return the set of matching scholarship categories
+     */
+    public Set<ScholarshipCategory> classify(Scholarship scholarship) {
+        Set<ScholarshipCategory> categories = new LinkedHashSet<>();
+        String text = getClassificationText(scholarship);
+        if(containsKeyword(text, MERIT_KEYWORDS)){
+            categories.add(ScholarshipCategory.MERIT);
+        }
+        if(containsKeyword(text, FINANCIAL_AID_KEYWORDS)){
+            categories.add(ScholarshipCategory.FINANCIAL_AID);
+        }
+        if(containsKeyword(text, EXCELLENCE_KEYWORDS)){
+            categories.add(ScholarshipCategory.EXCELLENCE);
+        }
+        if(categories.isEmpty()){
+            categories.add(ScholarshipCategory.UNCATEGORIZED);
+        }
+        return categories;
+    }
+
+    //This method is used to combine the scholarship information into a single string for matching keywords
+    private String getClassificationText(Scholarship scholarship) {
+        return (scholarship.getTitle() + " " +
+                scholarship.getDescription() + " " +
+                scholarship.getFullDescription() + " " +
+                scholarship.getRequirements() + " " +
+                scholarship.getAwardType()
+        ).toLowerCase();
+    }
+
+    //This method is used to check if the scholarship contains any of the specified keywords.
+    private boolean containsKeyword(String text, String... keywords) {
+        for(String keyword : keywords){
+            if(text.contains(keyword.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private static final String[] MERIT_KEYWORDS = {
             "gpa",
@@ -67,43 +116,4 @@ public class ClassificationService {
             "commitment",
             "service"
     };
-
-    //This method is used to classify a scholarship based on its information and return all applicable categories
-    public Set<ScholarshipCategory> classify(Scholarship scholarship) {
-        Set<ScholarshipCategory> categories = new LinkedHashSet<>();
-        String text = getClassificationText(scholarship);
-        if(containsKeyword(text, MERIT_KEYWORDS)){
-            categories.add(ScholarshipCategory.MERIT);
-        }
-        if(containsKeyword(text, FINANCIAL_AID_KEYWORDS)){
-            categories.add(ScholarshipCategory.FINANCIAL_AID);
-        }
-        if(containsKeyword(text, EXCELLENCE_KEYWORDS)){
-            categories.add(ScholarshipCategory.EXCELLENCE);
-        }
-        if(categories.isEmpty()){
-            categories.add(ScholarshipCategory.UNCATEGORIZED);
-        }
-        return categories;
-    }
-
-    //This method is used to combine the scholarship information into a single string for matching keywords
-    private String getClassificationText(Scholarship scholarship) {
-        return (scholarship.getTitle() + " " +
-                scholarship.getDescription() + " " +
-                scholarship.getFullDescription() + " " +
-                scholarship.getRequirements() + " " +
-                scholarship.getAwardType()
-        ).toLowerCase();
-    }
-
-    //This method is used to check if the scholarship contains any of the specified keywords.
-    private boolean containsKeyword(String text, String... keywords) {
-        for(String keyword : keywords){
-            if(text.contains(keyword.toLowerCase())){
-                return true;
-            }
-        }
-        return false;
-    }
 }

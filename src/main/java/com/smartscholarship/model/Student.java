@@ -1,5 +1,11 @@
 package com.smartscholarship.model;
 
+/**
+ * Represents a student using the Smart Scholarship Tracker.
+ * This class stores the student's personal information,
+ * academic information and household income used for
+ * scholarship eligibility evaluation.
+ */
 public class Student {
     private String studentID;
     private String name;
@@ -9,10 +15,19 @@ public class Student {
     private String gmail;
     private String mobile;
 
-    //This is the default constructor
+    /**
+     * Creates an empty student object.
+     */
     public Student() {}
 
-    //This is the full constructor
+    /**
+     * Creates a student with the required profile information.
+     *
+     * @param studentID the student ID
+     * @param name the student's name
+     * @param gpa the student's GPA
+     * @param householdIncome the student's annual household income
+     */
     public Student(String studentID,
                    String name,
                    double gpa,
@@ -23,7 +38,6 @@ public class Student {
         this.householdIncome = householdIncome;
     }
 
-    //This is the getters and setters
     public String getStudentID() {return studentID;}
     public void setStudentID(String studentID) {this.studentID = studentID;}
 

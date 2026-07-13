@@ -20,7 +20,7 @@ public class ApplicationController {
     }
 
     /**
-     * Handles the scholarship application search action.
+     * Triggers a refresh of the application view after the search field changes.
      *
      * @param searchField the search input field
      */
@@ -31,7 +31,8 @@ public class ApplicationController {
     }
 
     /**
-     * Handles filtering scholarship applications by status.
+     * Triggers a refresh of the application view after the selected
+     * application status changes.
      *
      * @param status the selected application status
      */
@@ -40,4 +41,6 @@ public class ApplicationController {
             refreshAction.run();
         }
     }
+
+
 }

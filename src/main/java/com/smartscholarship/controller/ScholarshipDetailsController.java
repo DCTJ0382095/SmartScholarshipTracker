@@ -6,9 +6,7 @@ import com.smartscholarship.model.ScholarshipApplication;
 import com.smartscholarship.model.Student;
 import com.smartscholarship.repository.ApplicationRepository;
 import com.smartscholarship.util.CurrentStudent;
-
 import javafx.scene.control.Alert;
-
 import java.awt.Desktop;
 import java.net.URI;
 import java.util.UUID;
@@ -26,13 +24,9 @@ public class ScholarshipDetailsController {
      */
     public void handleContact(String contactUrl) {
         if (contactUrl == null || contactUrl.isBlank()) {
-            showMessage(
-                    "Contact Unavailable",
-                    "No contact information is available for this scholarship."
-            );
+            showMessage("Contact Unavailable", "No contact information is available for this scholarship.");
             return;
         }
-
         openUrl(contactUrl);
     }
 
@@ -44,40 +38,25 @@ public class ScholarshipDetailsController {
      * @param scholarship the scholarship to apply for
      */
     public void handleApply(Scholarship scholarship) {
-
         Student student = CurrentStudent.getStudent();
-
         if (student == null) {
-            showMessage(
-                    "Profile Required",
-                    "Please complete your profile before applying."
-            );
+            showMessage("Profile Required", "Please complete your profile before applying.");
             return;
         }
-
-        boolean alreadyApplied = ApplicationRepository.getApplications()
-                .stream()
-                .anyMatch(app ->
-                        app.getApplicant().getStudentID().equals(student.getStudentID())
-                                && app.getScholarship().getTitle().equals(scholarship.getTitle())
-                );
-
+        boolean alreadyApplied = ApplicationRepository.getApplications().stream().anyMatch(app ->
+                app.getApplicant().getStudentID().equals(student.getStudentID())
+                        && app.getScholarship().getTitle().equals(scholarship.getTitle())
+        );
         if (alreadyApplied) {
-            showMessage(
-                    "Already Applied",
-                    "You have already applied for this scholarship."
-            );
+            showMessage("Already Applied", "You have already applied for this scholarship.");
             return;
         }
-
         ScholarshipApplication application = new ScholarshipApplication();
         application.setApplicationID(UUID.randomUUID().toString());
         application.setApplicant(student);
         application.setScholarship(scholarship);
         application.setStatus(ApplicationStatus.APPLIED);
-
         ApplicationRepository.addApplication(application);
-
         openUrl(scholarship.getApplyUrl());
     }
 
@@ -91,23 +70,17 @@ public class ScholarshipDetailsController {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(new URI(url));
             } else {
-                showMessage(
-                        "Unable to Open Link",
-                        "This device cannot open the link automatically."
-                );
+                showMessage("Unable to Open Link", "This device cannot open the link automatically.");
             }
         } catch (Exception exception) {
-            showMessage(
-                    "Unable to Open Link",
-                    "The link could not be opened."
-            );
+            showMessage("Unable to Open Link", "The link could not be opened.");
         }
     }
 
     /**
      * Displays an information message to the user.
      *
-     * @param title the alert title
+     * @param title   the alert title
      * @param message the alert message
      */
     private void showMessage(String title, String message) {

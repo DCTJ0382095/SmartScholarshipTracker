@@ -1,6 +1,9 @@
 package com.smartscholarship.model;
 
-//This enum is used to represent the categories assigned to a scholarship.
+/**
+ * Represents the categories that can be assigned
+ * to a scholarship after classification.
+ */
 public enum ScholarshipCategory {
     MERIT,
     FINANCIAL_AID,

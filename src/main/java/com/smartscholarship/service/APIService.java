@@ -22,6 +22,11 @@ import java.util.Arrays;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Retrieves scholarship data from the Apify API, manages
+ * local caching, and converts the retrieved JSON data
+ * into Scholarship objects.
+ */
 public class APIService {
 
     private static final String API_URL = "https://api.apify.com/v2/acts/commanding_hotdog~scholarship-finder-scraper/run-sync-get-dataset-items?token=";
@@ -33,7 +38,12 @@ public class APIService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
-    //This method is the main function
+    /**
+     * Retrieves scholarship data from the cache or API and
+     * converts the response into scholarship objects.
+     *
+     * @return the list of available scholarships
+     */
     public List<Scholarship> fetchScholarships() {
         String json;
         if (hasCache() && isCacheValid()) {
@@ -124,7 +134,6 @@ public class APIService {
     //This method is used to send the HTTP request to the Apify API
     private String sendRequest(String token) {
         String requestBody = buildRequestBody();
-        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = buildRequest(token, requestBody);
         try {
             HttpResponse<String> response =

@@ -2,9 +2,7 @@ package com.smartscholarship.controller;
 
 import com.smartscholarship.model.Scholarship;
 import com.smartscholarship.service.APIService;
-import com.smartscholarship.service.EligibilityService;
 import javafx.scene.control.TextField;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +14,6 @@ public class ScholarshipExploreController {
 
     private Runnable refreshAction;
     private final APIService apiService = new APIService();
-    private final EligibilityService eligibilityService = new EligibilityService();
     private final List<Scholarship> scholarships;
 
     /**
@@ -43,9 +40,6 @@ public class ScholarshipExploreController {
      * @param searchField the search input field
      */
     public void handleSearch(TextField searchField) {
-        String keyword = searchField.getText().trim();
-        System.out.println("Searching scholarship: " + keyword);
-
         if (refreshAction != null) {
             refreshAction.run();
         }
@@ -57,28 +51,8 @@ public class ScholarshipExploreController {
      * @param category the selected scholarship category
      */
     public void handleCategoryFilter(String category) {
-        System.out.println("Selected category: " + category);
-
         if (refreshAction != null) {
             refreshAction.run();
         }
-    }
-
-    /**
-     * Handles the selection of a scholarship.
-     *
-     * @param scholarshipName the selected scholarship name
-     */
-    public void handleScholarshipClick(String scholarshipName) {
-        System.out.println("Selected scholarship: " + scholarshipName);
-    }
-
-    /**
-     * Returns all available scholarships.
-     *
-     * @return list of scholarships
-     */
-    public List<Scholarship> getScholarships() {
-        return scholarships;
     }
 }

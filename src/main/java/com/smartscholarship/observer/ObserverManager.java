@@ -1,9 +1,11 @@
 package com.smartscholarship.observer;
 
-import com.smartscholarship.model.ApplicationStatus;
-import com.smartscholarship.model.Student;
-
+/**
+ * Provides shared access to the application's notification
+ * manager and registered notification observer.
+ */
 public final class ObserverManager {
+
     private static final ApplicationStatusNotifier NOTIFIER = new ApplicationStatusNotifier();
     private static final StudentNotificationObserver OBSERVER = new StudentNotificationObserver();
 
@@ -11,14 +13,24 @@ public final class ObserverManager {
         NOTIFIER.addObserver(OBSERVER);
     }
 
-    private ObserverManager() {
-    }
+    /**
+     * Prevents instantiation of this utility class.
+     */
+    private ObserverManager() {}
 
+    /**
+     * Returns the shared application status notifier.
+     *
+     * @return the application status notifier
+     */
     public static ApplicationStatusNotifier getNotifier() {
         return NOTIFIER;
     }
 
-    public static StudentNotificationObserver getObserver() {
-        return OBSERVER;
-    }
+    /**
+     * Returns the shared student notification observer.
+     *
+     * @return the student notification observer
+     */
+    public static StudentNotificationObserver getObserver() { return OBSERVER; }
 }

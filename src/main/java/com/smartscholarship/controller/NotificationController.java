@@ -21,7 +21,8 @@ public class NotificationController {
     }
 
     /**
-     * Handles the notification search action.
+     * Triggers a refresh of the notification view after the
+     * search field changes.
      *
      * @param searchField the search input field
      */
@@ -32,8 +33,8 @@ public class NotificationController {
     }
 
     /**
-     * Handles the action for viewing additional
-     * notification details.
+     * Triggers a refresh of the notification view after the
+     * user requests to view more notifications.
      */
     public void handleViewMore() {
         if (refreshAction != null) {

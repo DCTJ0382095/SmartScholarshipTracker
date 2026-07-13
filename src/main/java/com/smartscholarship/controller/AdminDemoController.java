@@ -3,11 +3,9 @@ package com.smartscholarship.controller;
 import com.smartscholarship.model.ApplicationStatus;
 import com.smartscholarship.model.ScholarshipApplication;
 import com.smartscholarship.observer.ApplicationStatusNotifier;
-import com.smartscholarship.observer.Observer;
 import com.smartscholarship.observer.StudentNotificationObserver;
 import com.smartscholarship.repository.ApplicationRepository;
 import com.smartscholarship.observer.ObserverManager;
-
 import java.util.List;
 
 /**
@@ -45,12 +43,10 @@ public class AdminDemoController {
      * @return list of pending scholarship applications
      */
     public List<ScholarshipApplication> getPendingApplications() {
-        return ApplicationRepository.getApplications().stream()
-                .filter(application ->
-                        application.getStatus() == ApplicationStatus.APPLIED
-                                || application.getStatus() == ApplicationStatus.UNDER_REVIEW
-                )
-                .toList();
+        return ApplicationRepository.getApplications().stream().filter(application ->
+                application.getStatus() == ApplicationStatus.APPLIED
+                        || application.getStatus() == ApplicationStatus.UNDER_REVIEW
+        ).toList();
     }
 
     /**
@@ -59,12 +55,10 @@ public class AdminDemoController {
      * @return list of approved and rejected scholarship applications
      */
     public List<ScholarshipApplication> getApplicationHistory() {
-        return ApplicationRepository.getApplications().stream()
-                .filter(application ->
-                        application.getStatus() == ApplicationStatus.APPROVED
-                                || application.getStatus() == ApplicationStatus.REJECTED
-                )
-                .toList();
+        return ApplicationRepository.getApplications().stream().filter(application ->
+                application.getStatus() == ApplicationStatus.APPROVED
+                        || application.getStatus() == ApplicationStatus.REJECTED
+        ).toList();
     }
 
     /**
@@ -78,22 +72,12 @@ public class AdminDemoController {
         if (query == null || query.isBlank()) {
             return getPendingApplications();
         }
-
         String keyword = query.trim().toLowerCase();
-
-        return getPendingApplications().stream()
-                .filter(application ->
-                        application.getApplicant().getName()
-                                .toLowerCase()
-                                .contains(keyword)
-                                || application.getScholarship().getTitle()
-                                .toLowerCase()
-                                .contains(keyword)
-                                || application.getApplicationID()
-                                .toLowerCase()
-                                .contains(keyword)
-                )
-                .toList();
+        return getPendingApplications().stream().filter(application ->
+                        application.getApplicant().getName().toLowerCase().contains(keyword)
+                                || application.getScholarship().getTitle().toLowerCase().contains(keyword)
+                                || application.getApplicationID().toLowerCase().contains(keyword)
+                ).toList();
     }
 
     /**
@@ -106,15 +90,12 @@ public class AdminDemoController {
     }
 
     /**
-     * Review the specified scholarship application.
+     * Marks the specified scholarship application as under review.
      *
      * @param applicationId the application ID
      */
     public void reviewApplication(String applicationId) {
-        updateApplicationStatus(
-                applicationId,
-                "Under Review"
-        );
+        updateApplicationStatus(applicationId, "Under Review");
     }
 
     /**
@@ -131,42 +112,24 @@ public class AdminDemoController {
      * to all registered observers.
      */
     private void updateApplicationStatus(String applicationId, String newStatus) {
-
         ScholarshipApplication selectedApplication = null;
-
         for (ScholarshipApplication application : ApplicationRepository.getApplications()) {
             if (application.getApplicationID().equals(applicationId)) {
                 selectedApplication = application;
                 break;
             }
         }
-
         if (selectedApplication == null) {
             return;
         }
-
         switch (newStatus) {
-            case "Approved" ->
-                    selectedApplication.setStatus(ApplicationStatus.APPROVED);
-
-            case "Rejected" ->
-                    selectedApplication.setStatus(ApplicationStatus.REJECTED);
-
-            case "Under Review" ->
-                    selectedApplication.setStatus(ApplicationStatus.UNDER_REVIEW);
-
-            default ->
-                    selectedApplication.setStatus(ApplicationStatus.APPLIED);
+            case "Approved" -> selectedApplication.setStatus(ApplicationStatus.APPROVED);
+            case "Rejected" -> selectedApplication.setStatus(ApplicationStatus.REJECTED);
+            case "Under Review" -> selectedApplication.setStatus(ApplicationStatus.UNDER_REVIEW);
+            default -> selectedApplication.setStatus(ApplicationStatus.APPLIED);
         }
-
         notifier.notifyObservers(
-                "Your application for \""
-                        + selectedApplication.getScholarship().getTitle()
-                        + "\" has been "
-                        + newStatus
-                        + "."
-        );
-
+                "Your application for \"" + selectedApplication.getScholarship().getTitle() + "\" has been " + newStatus + ".");
         refreshView();
     }
 

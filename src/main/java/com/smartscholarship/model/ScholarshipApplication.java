@@ -1,27 +1,39 @@
 package com.smartscholarship.model;
 
+/**
+ * Represents a scholarship application submitted
+ * by a student.
+ */
 public class ScholarshipApplication {
+
     private String applicationID;
     private Student applicant;
     private Scholarship scholarship;
     private ApplicationStatus status;
 
-    //This is the default constructor
+    /**
+     * Creates an empty scholarship application.
+     */
     public ScholarshipApplication() {}
 
-    //This is the full constructor
+    /**
+     * Creates a scholarship application with all required information.
+     *
+     * @param applicationID the application ID
+     * @param applicant the student submitting the application
+     * @param scholarship the scholarship being applied for
+     * @param status the current application status
+     */
     public ScholarshipApplication(String applicationID,
                                   Student applicant,
                                   Scholarship scholarship,
                                   ApplicationStatus status) {
-
         this.applicationID = applicationID;
         this.applicant = applicant;
         this.scholarship = scholarship;
         this.status = status;
     }
 
-    //This is the getters and setters
     public String getApplicationID() {return applicationID;}
     public void setApplicationID(String applicationID) {this.applicationID = applicationID;}
 
