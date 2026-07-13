@@ -44,4 +44,4 @@ build/
 src/main/resources/config.properties
 
 # Local cache
-cache/
+src/main/java/cache/

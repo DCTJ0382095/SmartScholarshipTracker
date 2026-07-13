@@ -57,7 +57,7 @@ public class APIService {
                 try {
                     saveBundledScholarships(json);
                 } catch (RuntimeException e) {
-                    System.out.println("Unable to update bundled scholarship data");
+                    System.out.println("Running from packaged application. Bundled scholarship data is read-only.");
                 }
             } catch (RuntimeException e) {
                 System.out.println("API server is unavailable. Loading bundled scholarship data...");
@@ -70,7 +70,9 @@ public class APIService {
     //This method is for retrieving the API tokens from local files
     private List<String> loadApiTokens() {
         Properties properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream input = Files.exists(Path.of("config.properties"))
+                ? Files.newInputStream(Path.of("config.properties"))
+                : getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
                 throw new RuntimeException("config.properties is not found.");
             }
