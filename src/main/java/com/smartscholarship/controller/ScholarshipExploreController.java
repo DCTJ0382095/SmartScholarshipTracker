@@ -55,4 +55,23 @@ public class ScholarshipExploreController {
             refreshAction.run();
         }
     }
+
+    /**
+     * Handles the selection of a scholarship.
+     *
+     * @param scholarshipName the selected scholarship name
+     */
+    public void handleScholarshipClick(String scholarshipName) {
+    }
+
+    /**
+     * Returns all available scholarships.
+     *
+     * @return list of scholarships
+     */
+    public List<Scholarship> getScholarships() {
+        return scholarships;
+    }
+
+
 }
